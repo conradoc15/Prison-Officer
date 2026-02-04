@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Prison Officer</title>
+
 <style>
 body {
     background:#111;
@@ -46,12 +47,8 @@ button {
 button:hover {
     background:#666;
 }
-.alert {
-    color:#ff5555;
-}
-.good {
-    color:#55ff55;
-}
+.alert { color:#ff5555; }
+.good { color:#55ff55; }
 </style>
 </head>
 
@@ -64,42 +61,43 @@ button:hover {
 <div id="container">
 
 <div id="left">
-    <div class="box" id="briefingBox">
-        <h3>👥 Team Briefing</h3>
-        <ul id="briefing"></ul>
-        <button onclick="startShift()">Start Shift</button>
-    </div>
 
-    <div class="box" id="prisonBox" style="display:none;">
-        <h3>🏢 Houseblocks</h3>
-        <div id="houseblocks"></div>
-    </div>
+<div class="box" id="briefingBox">
+    <h3>👥 Team Briefing</h3>
+    <ul id="briefing"></ul>
+    <button onclick="startShift()">Start Shift</button>
+</div>
+
+<div class="box" id="prisonBox" style="display:none;">
+    <h3>🏢 Assigned Area</h3>
+    <div id="assignment"></div>
+</div>
+
 </div>
 
 <div id="right">
-    <div class="box">
-        <h3>⏱️ Shift Time</h3>
-        <div id="time">Not started</div>
-    </div>
 
-    <div class="box">
-        <h3>🔔 Active Cell Bells</h3>
-        <ul id="bells"></ul>
-    </div>
+<div class="box">
+    <h3>⏱️ Shift Time</h3>
+    <div id="time">Not started</div>
+</div>
 
-    <div class="box">
-        <h3>📋 Shift Log</h3>
-        <ul id="log"></ul>
-    </div>
+<div class="box">
+    <h3>🔔 Active Cell Bells</h3>
+    <ul id="bells"></ul>
+</div>
+
+<div class="box">
+    <h3>📋 Shift Log</h3>
+    <ul id="log"></ul>
+</div>
+
 </div>
 
 </div>
 
 <script>
-let shiftStarted = false;
-let time = 0;
-let bells = [];
-
+// ====== DATA ======
 const houseblocks = [
     "VP Wing",
     "Induction Wing",
@@ -109,6 +107,18 @@ const houseblocks = [
     "Main Prisoners B"
 ];
 
+const wings = ["A", "B", "C"];
+
+let officerAssignment = {
+    block: null,
+    wing: null
+};
+
+let shiftStarted = false;
+let time = 0;
+let bells = [];
+
+// ====== UTILS ======
 function random(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 function log(text){
@@ -117,78 +127,91 @@ function log(text){
     document.getElementById("log").prepend(li);
 }
 
+// ====== BRIEFING ======
 function generateBriefing(){
-    const notes = [
-        "Staff shortage on Main Prisoners A",
-        "High Risk prisoner located in Induction Wing",
-        "Previous shift reported contraband",
-        "Medication delays reported",
-        "Segregation Unit near capacity",
-        "Reception expecting new arrivals"
-    ];
+    officerAssignment.block = random(houseblocks);
+    officerAssignment.wing = random(wings);
+
     const ul = document.getElementById("briefing");
-    notes.sort(()=>0.5-Math.random()).slice(0,3).forEach(n=>{
+    ul.innerHTML = "";
+
+    const assign = document.createElement("li");
+    assign.innerHTML = `<strong>Assigned to:</strong> ${officerAssignment.block} – Wing ${officerAssignment.wing}`;
+    ul.appendChild(assign);
+
+    const notes = [
+        "High Risk prisoner on this wing",
+        "Previous shift reported aggressive behaviour",
+        "Multiple cell bell activations overnight",
+        "Medication compliance issues reported",
+        "Potential contraband intelligence"
+    ];
+
+    notes.sort(()=>0.5-Math.random()).slice(0,2).forEach(n=>{
         const li = document.createElement("li");
         li.textContent = n;
         ul.appendChild(li);
     });
 }
 
+// ====== SHIFT START ======
 function startShift(){
     shiftStarted = true;
     document.getElementById("briefingBox").style.display="none";
     document.getElementById("prisonBox").style.display="block";
+    document.getElementById("assignment").innerHTML =
+        `<p><strong>${officerAssignment.block}</strong></p><p>Wing ${officerAssignment.wing}</p>`;
     log("Shift started");
 }
 
+// ====== TIME ======
 function updateTime(){
     if(!shiftStarted) return;
     time++;
     document.getElementById("time").textContent = time + " min";
 }
 
+// ====== CELL BELLS ======
 function spawnBell(){
     if(!shiftStarted) return;
-    if(Math.random()<0.4){
-        const isIncident = Math.random()<0.01;
+
+    if(Math.random() < 0.4){
+        const isIncident = Math.random() < 0.01;
+
         const bell = {
             id: Date.now(),
-            block: random(houseblocks),
             timer: 5,
             incident: isIncident
         };
+
         bells.push(bell);
-        log("Cell bell activated in " + bell.block);
+        log(`Cell bell activated – ${officerAssignment.block} Wing ${officerAssignment.wing}`);
     }
 }
 
 function updateBells(){
     const ul = document.getElementById("bells");
     ul.innerHTML="";
+
     bells.forEach(b=>{
         const li = document.createElement("li");
-        li.innerHTML = `${b.block} – ${b.timer} min ${b.incident ? "<span class='alert'>REAL INCIDENT</span>" : ""}`;
+        li.innerHTML =
+            `${officerAssignment.block} Wing ${officerAssignment.wing} – ${b.timer} min
+            ${b.incident ? "<span class='alert'>REAL INCIDENT</span>" : ""}`;
         ul.appendChild(li);
+
         b.timer--;
-        if(b.timer<=0){
-            log(b.incident ? "❗ Incident escalated due to no response" : "Bell unanswered");
+
+        if(b.timer <= 0){
+            log(b.incident ? "❗ Incident escalated – delayed response" : "Bell unanswered");
         }
     });
-    bells = bells.filter(b=>b.timer>0);
+
+    bells = bells.filter(b => b.timer > 0);
 }
 
-function drawHouseblocks(){
-    const div = document.getElementById("houseblocks");
-    div.innerHTML="";
-    houseblocks.forEach(h=>{
-        const p = document.createElement("p");
-        p.textContent = "• " + h;
-        div.appendChild(p);
-    });
-}
-
+// ====== INIT ======
 generateBriefing();
-drawHouseblocks();
 
 setInterval(updateTime, 60000);
 setInterval(spawnBell, 30000);
