@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Prison Officer – Active Shift</title>
+<title>Prison Officer – Shift Simulation</title>
 
 <style>
 body {
@@ -13,13 +13,12 @@ body {
 }
 header {
     background: #020617;
-    padding: 12px;
+    padding: 10px;
     text-align: center;
-    font-weight: bold;
 }
 .clock {
-    font-size: 14px;
     color: #fbbf24;
+    font-size: 14px;
 }
 .container {
     display: grid;
@@ -32,22 +31,21 @@ header {
     border-radius: 8px;
     padding: 15px;
 }
-h3 { color: #fbbf24; margin-top: 0; }
 button {
     background: #2563eb;
-    color: white;
     border: none;
-    padding: 7px 10px;
-    margin: 4px;
+    color: white;
+    padding: 6px 10px;
+    margin: 4px 0;
     border-radius: 5px;
     cursor: pointer;
 }
 button.warn { background: #ca8a04; }
-button.small { font-size: 12px; }
+button.bad { background: #b91c1c; }
 .cellbell {
     border: 1px solid #334155;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 6px;
     margin-bottom: 10px;
 }
 .log { font-size: 13px; line-height: 1.4; }
@@ -57,16 +55,20 @@ button.small { font-size: 12px; }
 <body>
 
 <header>
-🚨 PRISON OFFICER – ACTIVE SHIFT 
+🚨 PRISON OFFICER – ACTIVE SHIFT
 <div class="clock" id="clock">07:00</div>
 </header>
 
 <div class="container">
 
 <div class="panel">
-<h3>👮 Assigned Area</h3>
-<p><b>Houseblock:</b> Main Prisoners A</p>
+<h3>📋 Team Briefing</h3>
+<p><b>Houseblock:</b> 1 – Main Prisoners</p>
 <p><b>Wing:</b> A</p>
+<p><b>Unlock roll:</b> 48 prisoners</p>
+<p><b>High Risk:</b> 2 prisoners</p>
+<p><b>ACCT:</b> 1 open</p>
+<p><b>Intel:</b> Increased tension after last night</p>
 </div>
 
 <div class="panel">
@@ -75,98 +77,95 @@ button.small { font-size: 12px; }
 </div>
 
 <div class="panel">
-<h3>📋 Shift Log</h3>
+<h3>🗺️ Wing Map</h3>
+<button onclick="openCell('1-A1-10')">Open cell 1-A1-10</button>
+<button onclick="openCell('1-A2-07')">Open cell 1-A2-07</button>
+</div>
+
+<div class="panel">
+<h3>📖 Shift Log</h3>
 <div id="log" class="log"></div>
 </div>
 
 </div>
 
 <script>
-let minute = 0;
 let hour = 7;
-let gameMinute = 0;
+let minute = 0;
+
+const clock = document.getElementById("clock");
 const bellsDiv = document.getElementById("bells");
 const logDiv = document.getElementById("log");
-
-const requests = [
-    "Could you bring me toilet paper?",
-    "My cellmate is acting strange",
-    "I feel unwell",
-    "There is shouting next door",
-    "I lost my canteen sheet",
-    "My TV is not working"
-];
 
 function log(msg) {
     logDiv.innerHTML = "• " + msg + "<br>" + logDiv.innerHTML;
 }
 
 function updateClock() {
-    gameMinute++;
-    if (gameMinute >= 60) {
+    minute++;
+    if (minute >= 60) {
+        minute = 0;
         hour++;
-        gameMinute = 0;
     }
-    document.getElementById("clock").innerText =
+    clock.innerText =
         (hour < 10 ? "0" : "") + hour + ":" +
-        (gameMinute < 10 ? "0" : "") + gameMinute;
+        (minute < 10 ? "0" : "") + minute;
 }
 
+// 1 minuta gry = 30 sekund realnych
+setInterval(updateClock, 30000);
+
+// CELL BELLS – bardzo rzadko
+setInterval(() => {
+    if (Math.random() < 0.15) {
+        createBell();
+    }
+}, 30000);
+
 function createBell() {
+    const cell = "1-A1-10";
     const bell = document.createElement("div");
     bell.className = "cellbell";
-
-    const request = requests[Math.floor(Math.random() * requests.length)];
-
     bell.innerHTML = `
         <b>Emergency Cell Bell</b><br>
-        <i>Observed:</i> Prisoner using emergency bell<br><br>
-        <button onclick="respond(this, '${request}')">Respond</button>
+        <i>Location:</i> ${cell}<br><br>
+        Prisoner requesting officer presence<br><br>
+        <button onclick="respond(this)">Respond</button>
         <button class="warn" onclick="delay(this)">Delay</button>
     `;
     bellsDiv.appendChild(bell);
-    log("Emergency cell bell activated");
+    log("Cell bell activated at " + cell);
 }
 
-function respond(btn, request) {
+function respond(btn) {
     const bell = btn.parentElement;
     bell.innerHTML = `
-        <b>Prisoner says:</b><br>
-        "${request}"<br><br>
-        <button class="small" onclick="answer(this, 'positive')">Yes</button>
-        <button class="small" onclick="answer(this, 'neutral')">No</button>
-        <button class="small" onclick="answer(this, 'negative')">This is not an emergency</button>
+        Prisoner request:<br>
+        "Could you bring me toilet paper?"<br><br>
+        <button onclick="decision('warn')">Verbal warning</button><br>
+        <button onclick="decision('iep')">Negative IEP</button><br>
+        <button onclick="decision('log')">Log only</button><br>
+        <button onclick="decision('advice')">Advice & de-escalation</button>
     `;
 }
 
-function answer(btn, mood) {
-    const bell = btn.parentElement;
-    let reaction = "";
+function decision(type) {
+    if (type === "warn") log("Prisoner verbally warned");
+    if (type === "iep") log("Negative IEP issued");
+    if (type === "log") log("Incident logged only");
+    if (type === "advice") log("Situation de-escalated successfully");
 
-    if (mood === "positive") reaction = "🙂 Prisoner calm and cooperative";
-    if (mood === "neutral") reaction = "😐 Prisoner disappointed but accepts decision";
-    if (mood === "negative") reaction = "😡 Prisoner angry – negative IEP issued";
-
-    log(reaction);
-    bellsDiv.removeChild(bell);
+    bellsDiv.innerHTML = "";
 }
 
 function delay(btn) {
-    log("Cell bell delayed – prisoner waiting");
+    log("Response delayed – prisoner waiting");
     bellsDiv.removeChild(btn.parentElement);
 }
 
-setInterval(() => {
-    updateClock();
-
-    // LOSOWO: 0–4 dzwonki / minuta, czasem zero przez długi czas
-    if (Math.random() < 0.3) {
-        const amount = Math.floor(Math.random() * 4);
-        for (let i = 0; i < amount; i++) createBell();
-    }
-}, 6000);
-
-log("Shift started – Wing A");
+function openCell(cell) {
+    log("Cell opened: " + cell);
+}
 </script>
 
 </body>
