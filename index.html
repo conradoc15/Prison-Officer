@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Prison Officer – Active Shift</title>
+
 <style>
 body {
     margin: 0;
@@ -12,10 +13,13 @@ body {
 }
 header {
     background: #020617;
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     font-weight: bold;
-    letter-spacing: 1px;
+}
+.clock {
+    font-size: 14px;
+    color: #fbbf24;
 }
 .container {
     display: grid;
@@ -28,68 +32,45 @@ header {
     border-radius: 8px;
     padding: 15px;
 }
-h3 {
-    margin-top: 0;
-    color: #fbbf24;
-}
+h3 { color: #fbbf24; margin-top: 0; }
 button {
     background: #2563eb;
     color: white;
     border: none;
-    padding: 8px 12px;
-    margin: 5px 5px 5px 0;
+    padding: 7px 10px;
+    margin: 4px;
     border-radius: 5px;
     cursor: pointer;
 }
-button.danger { background: #dc2626; }
 button.warn { background: #ca8a04; }
-button:disabled {
-    background: #334155;
-    cursor: not-allowed;
-}
-.log {
-    font-size: 13px;
-    line-height: 1.4;
-}
+button.small { font-size: 12px; }
 .cellbell {
     border: 1px solid #334155;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
 }
-.timer {
-    color: #f87171;
-    font-weight: bold;
-}
+.log { font-size: 13px; line-height: 1.4; }
 </style>
 </head>
+
 <body>
 
 <header>
-🚨 PRISON OFFICER – ACTIVE SHIFT
+🚨 PRISON OFFICER – ACTIVE SHIFT 
+<div class="clock" id="clock">07:00</div>
 </header>
 
 <div class="container">
 
 <div class="panel">
-<h3>👮 Team Briefing</h3>
+<h3>👮 Assigned Area</h3>
 <p><b>Houseblock:</b> Main Prisoners A</p>
-<p><b>Assigned Wing:</b> Wing A</p>
-<p><b>Notes from last shift:</b></p>
-<ul>
-<li>High Risk prisoner on landing</li>
-<li>Increased drug debt tension</li>
-<li>Staff short on night shift</li>
-</ul>
+<p><b>Wing:</b> A</p>
 </div>
 
 <div class="panel">
-<h3>⏱ Shift Time</h3>
-<p id="time">0 min</p>
-</div>
-
-<div class="panel">
-<h3>🔔 Active Cell Bells</h3>
+<h3>🔔 Emergency Cell Bells</h3>
 <div id="bells"></div>
 </div>
 
@@ -102,85 +83,87 @@ button:disabled {
 
 <script>
 let minute = 0;
-let bellId = 0;
-
-const log = msg => {
-    const div = document.getElementById("log");
-    div.innerHTML = "• " + msg + "<br>" + div.innerHTML;
-};
-
+let hour = 7;
+let gameMinute = 0;
 const bellsDiv = document.getElementById("bells");
+const logDiv = document.getElementById("log");
 
-function createBell() {
-    bellId++;
-    const incident = Math.random() < 0.01;
+const requests = [
+    "Could you bring me toilet paper?",
+    "My cellmate is acting strange",
+    "I feel unwell",
+    "There is shouting next door",
+    "I lost my canteen sheet",
+    "My TV is not working"
+];
 
-    const bell = document.createElement("div");
-    bell.className = "cellbell";
-    bell.id = "bell" + bellId;
-
-    let timeLeft = 5;
-
-    bell.innerHTML = `
-        <b>Cell Bell – Wing A</b><br>
-        <span class="timer">Time left: ${timeLeft} min</span><br><br>
-        <button onclick="respond(${bellId}, ${incident})">Respond</button>
-        <button class="warn" onclick="callSupport(${bellId})">Call Support</button>
-        <button class="danger" onclick="ignore(${bellId})">Ignore</button>
-    `;
-
-    bellsDiv.appendChild(bell);
-    log("Cell bell activated – Wing A");
-
-    const interval = setInterval(() => {
-        timeLeft--;
-        if (!document.getElementById("bell" + bellId)) {
-            clearInterval(interval);
-            return;
-        }
-        bell.querySelector(".timer").innerText = "Time left: " + timeLeft + " min";
-        if (timeLeft <= 0) {
-            log("⚠ Missed cell bell – wing escalation reported");
-            bellsDiv.removeChild(bell);
-            clearInterval(interval);
-        }
-    }, 6000);
+function log(msg) {
+    logDiv.innerHTML = "• " + msg + "<br>" + logDiv.innerHTML;
 }
 
-function respond(id, incident) {
-    const bell = document.getElementById("bell" + id);
-    if (!bell) return;
-
-    if (incident) {
-        const events = [
-            "Fight in cell – use of force required",
-            "Unconscious prisoner – medical emergency",
-            "Fire started – emergency response",
-            "Seizure – first aid administered"
-        ];
-        log("🚨 REAL INCIDENT: " + events[Math.floor(Math.random() * events.length)]);
-    } else {
-        log("Cell bell resolved – routine request");
+function updateClock() {
+    gameMinute++;
+    if (gameMinute >= 60) {
+        hour++;
+        gameMinute = 0;
     }
+    document.getElementById("clock").innerText =
+        (hour < 10 ? "0" : "") + hour + ":" +
+        (gameMinute < 10 ? "0" : "") + gameMinute;
+}
+
+function createBell() {
+    const bell = document.createElement("div");
+    bell.className = "cellbell";
+
+    const request = requests[Math.floor(Math.random() * requests.length)];
+
+    bell.innerHTML = `
+        <b>Emergency Cell Bell</b><br>
+        <i>Observed:</i> Prisoner using emergency bell<br><br>
+        <button onclick="respond(this, '${request}')">Respond</button>
+        <button class="warn" onclick="delay(this)">Delay</button>
+    `;
+    bellsDiv.appendChild(bell);
+    log("Emergency cell bell activated");
+}
+
+function respond(btn, request) {
+    const bell = btn.parentElement;
+    bell.innerHTML = `
+        <b>Prisoner says:</b><br>
+        "${request}"<br><br>
+        <button class="small" onclick="answer(this, 'positive')">Yes</button>
+        <button class="small" onclick="answer(this, 'neutral')">No</button>
+        <button class="small" onclick="answer(this, 'negative')">This is not an emergency</button>
+    `;
+}
+
+function answer(btn, mood) {
+    const bell = btn.parentElement;
+    let reaction = "";
+
+    if (mood === "positive") reaction = "🙂 Prisoner calm and cooperative";
+    if (mood === "neutral") reaction = "😐 Prisoner disappointed but accepts decision";
+    if (mood === "negative") reaction = "😡 Prisoner angry – negative IEP issued";
+
+    log(reaction);
     bellsDiv.removeChild(bell);
 }
 
-function callSupport(id) {
-    log("Support team called to Wing A");
-    const bell = document.getElementById("bell" + id);
-    if (bell) bellsDiv.removeChild(bell);
-}
-
-function ignore(id) {
-    log("❌ Cell bell ignored – negative record added");
-    const bell = document.getElementById("bell" + id);
-    if (bell) bellsDiv.removeChild(bell);
+function delay(btn) {
+    log("Cell bell delayed – prisoner waiting");
+    bellsDiv.removeChild(btn.parentElement);
 }
 
 setInterval(() => {
-    minute++;
-    document.getElementById("time").innerText = minute + " min";
-    if (Math.random() < 0.6) createBell();
+    updateClock();
+
+    // LOSOWO: 0–4 dzwonki / minuta, czasem zero przez długi czas
+    if (Math.random() < 0.3) {
+        const amount = Math.floor(Math.random() * 4);
+        for (let i = 0; i < amount; i++) createBell();
+    }
 }, 6000);
 
 log("Shift started – Wing A");
