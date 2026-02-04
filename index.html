@@ -1,153 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Prison Officer (UK) – v0.2</title>
+<title>Prison Officer</title>
 <style>
-body { font-family: Arial; background:#111; color:#eee; padding:20px; }
-h1 { color:#ffcc00; }
-.panel { background:#1e1e1e; padding:15px; margin-bottom:15px; border-radius:8px; }
-button { padding:10px; margin:5px 0; width:100%; background:#333; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-button:disabled { background:#555; }
-.alert { color:#ff5555; font-weight:bold; }
-.log { font-size:14px; color:#ccc; }
+body {
+    background:#111;
+    color:#eee;
+    font-family: Arial, sans-serif;
+    margin:0;
+}
+header {
+    background:#222;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+}
+#container {
+    display:flex;
+    height:calc(100vh - 60px);
+}
+#left, #right {
+    padding:15px;
+    overflow:auto;
+}
+#left {
+    width:65%;
+    border-right:2px solid #333;
+}
+#right {
+    width:35%;
+}
+.box {
+    border:1px solid #444;
+    padding:10px;
+    margin-bottom:10px;
+}
+button {
+    background:#444;
+    color:white;
+    border:none;
+    padding:8px 12px;
+    cursor:pointer;
+}
+button:hover {
+    background:#666;
+}
+.alert {
+    color:#ff5555;
+}
+.good {
+    color:#55ff55;
+}
 </style>
 </head>
 
 <body>
 
-<h1>👮 Prison Officer (UK)</h1>
-<p><i>One prison. Endless procedures.</i></p>
+<header>
+🚨 PRISON OFFICER – ACTIVE SHIFT
+</header>
 
-<div class="panel">
-<strong>Stats</strong><br>
-Compliance: <span id="compliance"></span><br>
-Prisoner Tension: <span id="tension"></span><br>
-Fatigue: <span id="fatigue"></span><br>
-Audit Risk: <span id="audit"></span><br>
+<div id="container">
+
+<div id="left">
+    <div class="box" id="briefingBox">
+        <h3>👥 Team Briefing</h3>
+        <ul id="briefing"></ul>
+        <button onclick="startShift()">Start Shift</button>
+    </div>
+
+    <div class="box" id="prisonBox" style="display:none;">
+        <h3>🏢 Houseblocks</h3>
+        <div id="houseblocks"></div>
+    </div>
 </div>
 
-<div class="panel">
-<strong>Procedures</strong>
-<button onclick="startAction('Roll Check',5)">Unlock & Roll Check (5 min)</button>
-<button onclick="startAction('Cell Check',10)">Cell Check (10 min)</button>
-<button onclick="startAction('Paperwork',15)">Paperwork (15 min)</button>
-<button onclick="startAction('Patrol',10)">Patrol Wing (10 min)</button>
+<div id="right">
+    <div class="box">
+        <h3>⏱️ Shift Time</h3>
+        <div id="time">Not started</div>
+    </div>
+
+    <div class="box">
+        <h3>🔔 Active Cell Bells</h3>
+        <ul id="bells"></ul>
+    </div>
+
+    <div class="box">
+        <h3>📋 Shift Log</h3>
+        <ul id="log"></ul>
+    </div>
 </div>
 
-<div class="panel alert" id="bellPanel" style="display:none;">
-🔔 CELL BELL ACTIVATED<br>
-Time left: <span id="bellTimer"></span><br><br>
-<button onclick="respondBell()">Respond immediately</button>
-<button onclick="delayBell()">Delay</button>
-<button onclick="ignoreBell()">Ignore</button>
 </div>
-
-<div class="panel">
-<strong>Status</strong><br>
-<span id="status">Idle</span>
-</div>
-
-<div class="panel log" id="log"></div>
 
 <script>
-let state = JSON.parse(localStorage.getItem("po_state_v2")) || {
-compliance:50, tension:30, fatigue:10, audit:20,
-busyUntil:0, bell:null
-};
+let shiftStarted = false;
+let time = 0;
+let bells = [];
 
-function save(){localStorage.setItem("po_state_v2",JSON.stringify(state));}
+const houseblocks = [
+    "VP Wing",
+    "Induction Wing",
+    "Main Prisoners A",
+    "Medication Wing",
+    "Enhanced Prisoners",
+    "Main Prisoners B"
+];
 
-function log(msg){
-document.getElementById("log").innerHTML="• "+msg+"<br>"+document.getElementById("log").innerHTML;
+function random(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function log(text){
+    const li = document.createElement("li");
+    li.textContent = text;
+    document.getElementById("log").prepend(li);
 }
 
-function updateUI(){
-document.getElementById("compliance").innerText=state.compliance;
-document.getElementById("tension").innerText=state.tension;
-document.getElementById("fatigue").innerText=state.fatigue;
-document.getElementById("audit").innerText=state.audit;
-
-let busy = Date.now()<state.busyUntil;
-document.querySelectorAll("button").forEach(b=>b.disabled=busy && !state.bell);
-document.getElementById("status").innerText=busy?"On duty…":"Idle";
-
-if(state.bell){
-document.getElementById("bellPanel").style.display="block";
-let left = Math.max(0,Math.floor((state.bell.deadline-Date.now())/1000));
-document.getElementById("bellTimer").innerText=left+"s";
-if(left<=0){autoFailBell();}
-}else{
-document.getElementById("bellPanel").style.display="none";
-}
-save();
+function generateBriefing(){
+    const notes = [
+        "Staff shortage on Main Prisoners A",
+        "High Risk prisoner located in Induction Wing",
+        "Previous shift reported contraband",
+        "Medication delays reported",
+        "Segregation Unit near capacity",
+        "Reception expecting new arrivals"
+    ];
+    const ul = document.getElementById("briefing");
+    notes.sort(()=>0.5-Math.random()).slice(0,3).forEach(n=>{
+        const li = document.createElement("li");
+        li.textContent = n;
+        ul.appendChild(li);
+    });
 }
 
-function startAction(name,min){
-state.busyUntil=Date.now()+min*60000;
-state.fatigue+=3;
-state.compliance+=2;
-log(name+" in progress.");
+function startShift(){
+    shiftStarted = true;
+    document.getElementById("briefingBox").style.display="none";
+    document.getElementById("prisonBox").style.display="block";
+    log("Shift started");
 }
 
-function triggerBell(){
-let roll=Math.random();
-let type="nonsense";
-if(roll<0.01) type="real";
-else if(roll<0.25) type="manipulation";
-
-state.bell={
-type:type,
-deadline:Date.now()+300000
-};
-log("Cell bell activated.");
+function updateTime(){
+    if(!shiftStarted) return;
+    time++;
+    document.getElementById("time").textContent = time + " min";
 }
 
-function resolveBell(outcome){
-if(state.bell.type==="real"){
-if(outcome==="respond"){
-log("REAL INCIDENT handled successfully.");
-state.compliance+=5;
-state.tension-=5;
-}else{
-log("REAL INCIDENT escalated. Investigation pending.");
-state.audit+=10;
-state.tension+=10;
-}
-}else{
-log("Cell bell was a false / minor issue.");
-}
-state.bell=null;
+function spawnBell(){
+    if(!shiftStarted) return;
+    if(Math.random()<0.4){
+        const isIncident = Math.random()<0.01;
+        const bell = {
+            id: Date.now(),
+            block: random(houseblocks),
+            timer: 5,
+            incident: isIncident
+        };
+        bells.push(bell);
+        log("Cell bell activated in " + bell.block);
+    }
 }
 
-function respondBell(){
-state.fatigue+=5;
-resolveBell("respond");
+function updateBells(){
+    const ul = document.getElementById("bells");
+    ul.innerHTML="";
+    bells.forEach(b=>{
+        const li = document.createElement("li");
+        li.innerHTML = `${b.block} – ${b.timer} min ${b.incident ? "<span class='alert'>REAL INCIDENT</span>" : ""}`;
+        ul.appendChild(li);
+        b.timer--;
+        if(b.timer<=0){
+            log(b.incident ? "❗ Incident escalated due to no response" : "Bell unanswered");
+        }
+    });
+    bells = bells.filter(b=>b.timer>0);
 }
 
-function delayBell(){
-resolveBell("delay");
+function drawHouseblocks(){
+    const div = document.getElementById("houseblocks");
+    div.innerHTML="";
+    houseblocks.forEach(h=>{
+        const p = document.createElement("p");
+        p.textContent = "• " + h;
+        div.appendChild(p);
+    });
 }
 
-function ignoreBell(){
-state.audit+=5;
-resolveBell("ignore");
-}
+generateBriefing();
+drawHouseblocks();
 
-function autoFailBell(){
-log("No response to cell bell logged.");
-state.audit+=10;
-resolveBell("ignore");
-}
-
-setInterval(()=>{
-if(!state.bell && Math.random()<0.02) triggerBell();
-updateUI();
-},1000);
-
-updateUI();
+setInterval(updateTime, 60000);
+setInterval(spawnBell, 30000);
+setInterval(updateBells, 60000);
 </script>
 
 </body>
 </html>
-
