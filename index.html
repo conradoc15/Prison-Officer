@@ -16,51 +16,50 @@ header {
   padding: 10px;
   text-align: center;
 }
-.clock {
-  color: #fbbf24;
-  font-size: 14px;
-}
+.clock { color:#fbbf24; font-size:14px; }
 nav {
-  background: #020617;
-  padding: 8px;
-  text-align: center;
+  background:#020617;
+  padding:8px;
+  text-align:center;
 }
-nav button {
-  margin: 3px;
-}
+nav button { margin:3px; }
 button {
-  background: #2563eb;
-  border: none;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+  background:#2563eb;
+  border:none;
+  color:white;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
 }
-button.warn { background: #ca8a04; }
-button.bad { background: #b91c1c; }
+button.warn { background:#ca8a04; }
+button.bad { background:#b91c1c; }
 
-.tab { display: none; padding: 15px; }
+.tab { display:none; padding:15px; }
 .panel {
-  background: #020617;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
+  background:#020617;
+  border-radius:8px;
+  padding:15px;
+  margin-bottom:15px;
 }
 input, select {
-  width: 100%;
-  padding: 6px;
-  margin: 5px 0 10px;
+  width:100%;
+  padding:6px;
+  margin:5px 0 10px;
 }
-.flag {
-  font-size: 18px;
+.cell {
+  border:1px solid #334155;
+  padding:6px;
+  margin:4px 0;
+  border-radius:5px;
+  cursor:pointer;
 }
 .cellbell {
-  border: 1px solid #334155;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 10px;
+  border:1px solid #334155;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:10px;
 }
-.log { font-size: 13px; line-height: 1.4; }
+.log { font-size:13px; line-height:1.4; }
 </style>
 </head>
 
@@ -76,6 +75,8 @@ input, select {
   <button onclick="showTab('briefing')">Briefing</button>
   <button onclick="showTab('shift')">Active Shift</button>
   <button onclick="showTab('bells')">Cell Bells</button>
+  <button onclick="showTab('map')">Wing Map</button>
+  <button onclick="showTab('pscs')">PSCS</button>
   <button onclick="showTab('log')">Shift Log</button>
 </nav>
 
@@ -116,16 +117,18 @@ input, select {
 <section id="briefing" class="tab">
   <div class="panel">
     <h2>📋 Team Briefing</h2>
-    <p>Houseblock: 1 – Main Prisoners</p>
-    <p>Wing: A</p>
-    <p>Unlock roll: 48 prisoners</p>
+    <p><b>Houseblock:</b> 1 – Main Prisoners</p>
+    <p><b>Wing:</b> A</p>
+    <p><b>Unlock Roll:</b> 48 prisoners</p>
+    <p><b>High Risk:</b> 2</p>
+    <p><b>ACCT:</b> 1 open</p>
   </div>
 </section>
 
 <section id="shift" class="tab">
   <div class="panel">
     <h2>👮 Active Shift</h2>
-    <p>Patrolling assigned wing.</p>
+    <p>Assigned to Wing A. Keys and radio issued.</p>
   </div>
 </section>
 
@@ -133,6 +136,31 @@ input, select {
   <div class="panel">
     <h2>🔔 Emergency Cell Bells</h2>
     <div id="bellsContainer"></div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section id="map" class="tab">
+  <div class="panel">
+    <h2>🗺️ Wing A – Map</h2>
+
+    <h4>Parter</h4>
+    <div class="cell" onclick="openCell('1-A1-10')">1-A1-10</div>
+    <div class="cell" onclick="openCell('1-A1-11')">1-A1-11</div>
+
+    <h4>Pierwsze piętro</h4>
+    <div class="cell" onclick="openCell('1-A2-05')">1-A2-05</div>
+    <div class="cell" onclick="openCell('1-A2-06')">1-A2-06</div>
+
+    <h4>Drugie piętro</h4>
+    <div class="cell" onclick="openCell('1-A3-01')">1-A3-01</div>
+  </div>
+</section>
+
+<section id="pscs" class="tab">
+  <div class="panel">
+    <h2>💻 PSCS</h2>
+    <p>(Prisoner profiles coming next)</p>
   </div>
 </section>
 
@@ -144,7 +172,7 @@ input, select {
 </section>
 
 <script>
-/* EUROPE COUNTRIES */
+/* EUROPE */
 const europe = [
 ["United Kingdom","🇬🇧"],["Poland","🇵🇱"],["Germany","🇩🇪"],["France","🇫🇷"],
 ["Italy","🇮🇹"],["Spain","🇪🇸"],["Netherlands","🇳🇱"],["Belgium","🇧🇪"],
@@ -155,103 +183,91 @@ const europe = [
 ["Ukraine","🇺🇦"],["Lithuania","🇱🇹"],["Latvia","🇱🇻"],["Estonia","🇪🇪"]
 ];
 
-const banned = ["hitler","nazi","fuck","cunt","shit"];
-
 const nationSelect = document.getElementById("nation");
-europe.forEach(c => {
-  const o = document.createElement("option");
-  o.value = c[0];
-  o.text = c[1] + " " + c[0];
+europe.forEach(c=>{
+  const o=document.createElement("option");
+  o.value=c[0]; o.text=c[1]+" "+c[0];
   nationSelect.add(o);
 });
 
-/* OFFICER SAVE */
-function saveOfficer() {
-  const data = {
-    first: firstName.value.trim(),
-    last: lastName.value.trim(),
-    alias: alias.value.trim(),
-    address: address.value,
-    gender: gender.value,
-    nation: nation.value
+/* OFFICER SAVE / LOAD */
+function saveOfficer(){
+  const data={
+    first:firstName.value.trim(),
+    last:lastName.value.trim(),
+    alias:alias.value.trim(),
+    address:address.value,
+    gender:gender.value,
+    nation:nation.value
   };
-
-  if (!data.last || !data.alias) return alert("Last name and alias required.");
-
-  for (let word of banned) {
-    if (Object.values(data).join(" ").toLowerCase().includes(word))
-      return alert("Inappropriate name detected.");
-  }
-
-  localStorage.setItem("officer", JSON.stringify(data));
+  if(!data.last||!data.alias) return alert("Last name and alias required.");
+  localStorage.setItem("officer",JSON.stringify(data));
   location.reload();
 }
 
-/* LOAD OFFICER */
-const officer = JSON.parse(localStorage.getItem("officer"));
-
-if (!officer) {
+const officer=JSON.parse(localStorage.getItem("officer"));
+if(!officer){
   showTab("setup");
-} else {
-  document.getElementById("mainNav").style.display = "block";
+}else{
+  document.getElementById("mainNav").style.display="block";
   showTab("briefing");
-
-  const flag = europe.find(e => e[0] === officer.nation)[1];
-  const name = officer.address === "alias" ? officer.alias : officer.last;
-
-  document.getElementById("officerDisplay").innerHTML =
-    `${flag} Officer ${name}`;
+  const flag=europe.find(e=>e[0]===officer.nation)[1];
+  const name=officer.address==="alias"?officer.alias:officer.last;
+  officerDisplay.innerHTML=`${flag} Officer ${name}`;
 }
 
 /* TABS */
-function showTab(id) {
-  document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-  document.getElementById(id).style.display = "block";
+function showTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+  document.getElementById(id).style.display="block";
 }
 
 /* CLOCK */
-let hour = 7, minute = 0;
-const clock = document.getElementById("clock");
-setInterval(() => {
-  minute++;
-  if (minute >= 60) { minute = 0; hour++; }
-  clock.innerText = `${hour.toString().padStart(2,"0")}:${minute.toString().padStart(2,"0")}`;
-}, 30000);
+let hour=7,minute=0;
+setInterval(()=>{
+  minute++; if(minute>=60){minute=0;hour++;}
+  clock.innerText=`${hour.toString().padStart(2,"0")}:${minute.toString().padStart(2,"0")}`;
+},30000);
 
 /* LOG */
-const logContainer = document.getElementById("logContainer");
-function log(msg) {
-  logContainer.innerHTML = "• " + msg + "<br>" + logContainer.innerHTML;
+function log(msg){
+  logContainer.innerHTML="• "+msg+"<br>"+logContainer.innerHTML;
 }
 
 /* CELL BELLS */
-setInterval(() => {
-  if (Math.random() < 0.1) createBell();
-}, 30000);
+setInterval(()=>{
+  if(Math.random()<0.1) createBell();
+},30000);
 
-function createBell() {
-  const div = document.createElement("div");
-  div.className = "cellbell";
-  div.innerHTML = `
+function createBell(){
+  const d=document.createElement("div");
+  d.className="cellbell";
+  d.innerHTML=`
     Cell bell from 1-A1-10<br><br>
     <button onclick="respond(this)">Respond</button>
     <button class="warn" onclick="delay(this)">Delay</button>
   `;
-  bellsContainer.appendChild(div);
+  bellsContainer.appendChild(d);
+  log("Cell bell activated at 1-A1-10");
 }
 
-function respond(btn) {
-  btn.parentElement.innerHTML = `
-    Prisoner asks for toilet paper.<br><br>
+function respond(btn){
+  btn.parentElement.innerHTML=`
+    Prisoner requests toilet paper.<br><br>
     <button onclick="log('Advice given')">Advice</button>
     <button onclick="log('Verbal warning')">Warning</button>
     <button class="bad" onclick="log('Negative IEP')">Negative IEP</button>
   `;
 }
 
-function delay(btn) {
+function delay(btn){
   log("Response delayed");
   btn.parentElement.remove();
+}
+
+/* MAP */
+function openCell(cell){
+  log("Cell opened: "+cell);
 }
 </script>
 
