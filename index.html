@@ -1,276 +1,1107 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>Prison Officer – Shift Simulation</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prison Officer – UK Shift Sim</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
-}
-header {
-  background: #020617;
-  padding: 10px;
-  text-align: center;
-}
-.clock { color:#fbbf24; font-size:14px; }
-nav {
-  background:#020617;
-  padding:8px;
-  text-align:center;
-}
-nav button { margin:3px; }
-button {
-  background:#2563eb;
-  border:none;
-  color:white;
-  padding:6px 10px;
-  border-radius:5px;
-  cursor:pointer;
-}
-button.warn { background:#ca8a04; }
-button.bad { background:#b91c1c; }
-
-.tab { display:none; padding:15px; }
-.panel {
-  background:#020617;
-  border-radius:8px;
-  padding:15px;
-  margin-bottom:15px;
-}
-input, select {
-  width:100%;
-  padding:6px;
-  margin:5px 0 10px;
-}
-.cell {
-  border:1px solid #334155;
-  padding:6px;
-  margin:4px 0;
-  border-radius:5px;
-  cursor:pointer;
-}
-.cellbell {
-  border:1px solid #334155;
-  padding:10px;
-  border-radius:6px;
-  margin-bottom:10px;
-}
-.log { font-size:13px; line-height:1.4; }
+  :root{
+    --bg:#0f172a;
+    --panel:#020617;
+    --border:#334155;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --accent:#fbbf24;
+    --btn:#2563eb;
+    --warn:#ca8a04;
+    --bad:#b91c1c;
+    --ok:#16a34a;
+  }
+  body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--text);}
+  header{
+    background:var(--panel);
+    padding:10px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{font-weight:800;letter-spacing:.5px}
+  .topRight{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;justify-content:flex-end;}
+  .clock{color:var(--accent);font-size:14px;font-weight:700}
+  .officerTag{font-size:13px;color:var(--muted)}
+  .layout{display:flex;min-height:calc(100vh - 54px);}
+  aside{
+    width:240px; background:var(--panel); border-right:1px solid var(--border);
+    padding:12px; box-sizing:border-box;
+  }
+  .navBtn{
+    width:100%; text-align:left; padding:10px 10px; margin:6px 0;
+    border-radius:8px; border:1px solid transparent; background:transparent; color:var(--text);
+    cursor:pointer; font-weight:700;
+  }
+  .navBtn:hover{border-color:var(--border); background:#0b1224;}
+  .navBtn.active{border-color:var(--accent); background:#0b1224;}
+  .navHint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.4}
+  main{flex:1; padding:14px; box-sizing:border-box;}
+  .panel{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; padding:14px; margin-bottom:14px;
+  }
+  h2,h3{margin:0 0 10px 0;color:var(--accent)}
+  h4{margin:14px 0 8px 0;color:var(--text)}
+  .muted{color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .col{flex:1;min-width:240px}
+  label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+  input,select{
+    width:100%; box-sizing:border-box; padding:9px 10px;
+    border-radius:10px; border:1px solid var(--border);
+    background:#0b1224; color:var(--text);
+  }
+  .btn{
+    background:var(--btn); border:none; color:white;
+    padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:800;
+  }
+  .btn:hover{filter:brightness(1.07)}
+  .btn.warn{background:var(--warn)}
+  .btn.bad{background:var(--bad)}
+  .btn.ok{background:var(--ok)}
+  .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 10px;border:1px solid var(--border);border-radius:999px;
+    background:#0b1224;font-size:13px;
+  }
+  .pill strong{color:var(--text)}
+  .list{margin:0;padding-left:18px}
+  .list li{margin:6px 0}
+  .table{width:100%;border-collapse:collapse;font-size:13px}
+  .table th,.table td{
+    border-bottom:1px solid var(--border);
+    padding:8px 6px;text-align:left;vertical-align:top;
+  }
+  .table th{color:var(--muted);font-weight:700}
+  .log{font-size:13px;line-height:1.45}
+  .cellGrid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+  .wingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .cellBox{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+    background:#0b1224;
+  }
+  .floorTitle{font-weight:800;color:var(--text);margin-bottom:6px}
+  .cellsRow{display:grid;grid-template-columns:repeat(6, minmax(38px, 1fr));gap:6px;margin-bottom:8px}
+  .cellBtn{
+    padding:8px 6px;border-radius:10px;border:1px solid var(--border);
+    background:#050b18;color:var(--text);cursor:pointer;font-weight:800;font-size:12px;
+  }
+  .cellBtn.open{border-color:var(--ok); background:#05210f}
+  .cellBtn.locked{border-color:#475569}
+  .cellBtn:hover{filter:brightness(1.08)}
+  .notice{
+    border:1px dashed var(--border);
+    border-radius:12px;
+    padding:10px;
+    background:#071027;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.4;
+  }
+  .divider{height:1px;background:var(--border);margin:12px 0}
+  .small{font-size:12px}
 </style>
 </head>
 
 <body>
-
 <header>
-🚨 PRISON OFFICER
-<div class="clock" id="clock"></div>
-<div id="officerDisplay"></div>
+  <div class="brand">🚨 PRISON OFFICER (UK)</div>
+  <div class="topRight">
+    <div>
+      <div class="clock" id="clock">--:--</div>
+      <div class="officerTag" id="officerTag"></div>
+    </div>
+    <div class="officerTag" id="shiftTag"></div>
+  </div>
 </header>
 
-<nav id="mainNav" style="display:none">
-  <button onclick="showTab('briefing')">Briefing</button>
-  <button onclick="showTab('shift')">Active Shift</button>
-  <button onclick="showTab('bells')">Cell Bells</button>
-  <button onclick="showTab('map')">Wing Map</button>
-  <button onclick="showTab('pscs')">PSCS</button>
-  <button onclick="showTab('log')">Shift Log</button>
-</nav>
+<div class="layout">
+  <aside>
+    <button class="navBtn" id="nav-setup" onclick="go('setup')">Officer Setup</button>
+    <button class="navBtn" id="nav-officer" onclick="go('officer')">Officer</button>
+    <button class="navBtn" id="nav-checkin" onclick="go('checkin')">Check-in</button>
+    <button class="navBtn" id="nav-briefing" onclick="go('briefing')">Briefing</button>
+    <button class="navBtn" id="nav-prison" onclick="go('prison')">Prison</button>
+    <button class="navBtn" id="nav-map" onclick="go('map')">Wing Map</button>
+    <button class="navBtn" id="nav-schedule" onclick="go('schedule')">Schedule</button>
+    <button class="navBtn" id="nav-events" onclick="go('events')">Events</button>
+    <button class="navBtn" id="nav-log" onclick="go('log')">Shift Log</button>
 
-<!-- OFFICER SETUP -->
-<section id="setup" class="tab">
-  <div class="panel">
-    <h2>👮 Officer Setup</h2>
+    <div class="navHint">
+      <div><strong>Tip:</strong> Ta gra jest „powolna”.</div>
+      <div>1h w grze = 30 min w realu.</div>
+      <div class="small">Decyzje są Twoje — system niczego nie narzuca automatycznie.</div>
+    </div>
+  </aside>
 
-    <label>First Name (staff only)</label>
-    <input id="firstName">
+  <main>
+    <!-- SETUP -->
+    <section id="setup" class="view">
+      <div class="panel">
+        <h2>👮 Officer Setup</h2>
+        <p class="muted">Tworzysz profil oficera. Dane zostaną zapisane na urządzeniu (localStorage) i będą ładowane automatycznie.</p>
 
-    <label>Last Name</label>
-    <input id="lastName">
+        <div class="row">
+          <div class="col">
+            <label>First Name (staff only)</label>
+            <input id="firstName" placeholder="np. Konrad"/>
 
-    <label>Alias / Callsign</label>
-    <input id="alias">
+            <label>Last Name</label>
+            <input id="lastName" placeholder="np. Ciesielka"/>
 
-    <label>How should prisoners address you?</label>
-    <select id="address">
-      <option value="surname">Surname</option>
-      <option value="alias">Alias</option>
-    </select>
+            <label>Alias / Callsign (opcjonalnie)</label>
+            <input id="alias" placeholder="np. Fox / Brick / Kosa (opcjonalnie)"/>
+          </div>
 
-    <label>Gender</label>
-    <select id="gender">
-      <option>Male</option>
-      <option>Female</option>
-    </select>
+          <div class="col">
+            <label>How should prisoners address you?</label>
+            <select id="addressPref">
+              <option value="surname">Surname</option>
+              <option value="alias">Alias</option>
+            </select>
 
-    <label>Nationality</label>
-    <select id="nation"></select>
+            <label>Gender</label>
+            <select id="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
 
-    <button onclick="saveOfficer()">Start Career</button>
-  </div>
-</section>
+            <label>Nationality (Europe)</label>
+            <select id="nation"></select>
+          </div>
+        </div>
 
-<!-- BRIEFING -->
-<section id="briefing" class="tab">
-  <div class="panel">
-    <h2>📋 Team Briefing</h2>
-    <p><b>Houseblock:</b> 1 – Main Prisoners</p>
-    <p><b>Wing:</b> A</p>
-    <p><b>Unlock Roll:</b> 48 prisoners</p>
-    <p><b>High Risk:</b> 2</p>
-    <p><b>ACCT:</b> 1 open</p>
-  </div>
-</section>
+        <div class="row">
+          <button class="btn ok" onclick="saveOfficer()">Save Officer</button>
+          <button class="btn ghost" onclick="resetAll()">Reset All (debug)</button>
+        </div>
 
-<section id="shift" class="tab">
-  <div class="panel">
-    <h2>👮 Active Shift</h2>
-    <p>Assigned to Wing A. Keys and radio issued.</p>
-  </div>
-</section>
+        <div class="notice">
+          <strong>Uwaga:</strong> Nie używamy imion wobec więźniów. Imię jest tylko dla staffu.
+          <br/>Adresowanie przez więźniów: nazwisko lub alias (jeśli podany).
+        </div>
+      </div>
+    </section>
 
-<section id="bells" class="tab">
-  <div class="panel">
-    <h2>🔔 Emergency Cell Bells</h2>
-    <div id="bellsContainer"></div>
-  </div>
-</section>
+    <!-- OFFICER -->
+    <section id="officer" class="view" style="display:none">
+      <div class="panel">
+        <h2>🪪 Officer</h2>
+        <div id="officerCard"></div>
 
-<!-- MAPA -->
-<section id="map" class="tab">
-  <div class="panel">
-    <h2>🗺️ Wing A – Map</h2>
+        <div class="divider"></div>
 
-    <h4>Parter</h4>
-    <div class="cell" onclick="openCell('1-A1-10')">1-A1-10</div>
-    <div class="cell" onclick="openCell('1-A1-11')">1-A1-11</div>
+        <h3>✏️ Edit Officer (1× per shift)</h3>
+        <div class="notice" id="editNotice"></div>
 
-    <h4>Pierwsze piętro</h4>
-    <div class="cell" onclick="openCell('1-A2-05')">1-A2-05</div>
-    <div class="cell" onclick="openCell('1-A2-06')">1-A2-06</div>
+        <div class="row" style="margin-top:10px">
+          <div class="col">
+            <label>First Name (staff only)</label>
+            <input id="editFirst"/>
+            <label>Last Name</label>
+            <input id="editLast"/>
+            <label>Alias / Callsign (opcjonalnie)</label>
+            <input id="editAlias"/>
+          </div>
+          <div class="col">
+            <label>Prisoners address you by</label>
+            <select id="editAddressPref">
+              <option value="surname">Surname</option>
+              <option value="alias">Alias</option>
+            </select>
+            <label>Gender</label>
+            <select id="editGender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <label>Nationality</label>
+            <select id="editNation"></select>
+          </div>
+        </div>
 
-    <h4>Drugie piętro</h4>
-    <div class="cell" onclick="openCell('1-A3-01')">1-A3-01</div>
-  </div>
-</section>
+        <button class="btn" onclick="saveOfficerEdit()">Save changes (consumes 1 edit this shift)</button>
+      </div>
+    </section>
 
-<section id="pscs" class="tab">
-  <div class="panel">
-    <h2>💻 PSCS</h2>
-    <p>(Prisoner profiles coming next)</p>
-  </div>
-</section>
+    <!-- CHECK-IN -->
+    <section id="checkin" class="view" style="display:none">
+      <div class="panel">
+        <h2>🧾 Check-in (Before Wing)</h2>
+        <p class="muted">Najpierw sprawdzasz szczegóły zmiany, potem dobierasz radio, klucze i opcjonalnie BWV.</p>
 
-<section id="log" class="tab">
-  <div class="panel">
-    <h2>📖 Shift Log</h2>
-    <div id="logContainer" class="log"></div>
-  </div>
-</section>
+        <div id="checkinState"></div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <button class="btn ok" onclick="startNewShift()">Start new shift (random assignment)</button>
+          <button class="btn ghost" onclick="loadShift()">Refresh shift data</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>👥 Staff Detail (today)</h3>
+        <div id="staffDetail"></div>
+
+        <div class="divider"></div>
+
+        <h3>📻 Radio</h3>
+        <div id="radioBox" class="notice"></div>
+        <button class="btn" onclick="pickupRadio()">Pick up radio</button>
+
+        <div class="divider"></div>
+
+        <h3>🔑 Keys</h3>
+        <div id="keysBox" class="notice"></div>
+        <button class="btn" onclick="pickupKeys()">Pick up keys</button>
+
+        <div class="divider"></div>
+
+        <h3>📷 Body Worn Video (optional)</h3>
+        <div id="bwvBox" class="notice"></div>
+        <button class="btn warn" onclick="toggleBWV()">Toggle BWV (take/leave)</button>
+
+        <div class="divider"></div>
+
+        <button class="btn ok" onclick="completeCheckin()">Proceed to Briefing</button>
+        <div class="notice" style="margin-top:10px">
+          <strong>Tip:</strong> Dobór radia zależy od Houseblocka (Alpha–Foxtrot). Numer jest losowy (2–30), bez 1 i 10.
+        </div>
+      </div>
+    </section>
+
+    <!-- BRIEFING -->
+    <section id="briefing" class="view" style="display:none">
+      <div class="panel">
+        <h2>📋 Team Briefing</h2>
+        <div id="briefingBox"></div>
+      </div>
+    </section>
+
+    <!-- PRISON INFO -->
+    <section id="prison" class="view" style="display:none">
+      <div class="panel">
+        <h2>🏢 Prison Info (for all players)</h2>
+        <p class="muted">Opis więzienia w tej grze – kanon świata.</p>
+
+        <h3>Houseblocks</h3>
+        <ul class="list">
+          <li><strong>Houseblock 1 – VP (Vulnerable Prisoners)</strong>: więźniowie pod specjalną ochroną (np. gwałciciele, pedofile, byli policjanci), wymagają separacji od general population.</li>
+          <li><strong>Houseblock 2 – Induction Wing</strong>: nowi więźniowie (ok. 2 tygodnie), później relokacja zależnie od potrzeb i dostępnych miejsc.</li>
+          <li><strong>Houseblock 3 – Main Prisoners</strong>: general population (różne wyroki i potrzeby bez separacji).</li>
+          <li><strong>Houseblock 4 – Medication & Detox</strong>: główny nacisk na medication i detoks (np. methadone).</li>
+          <li><strong>Houseblock 5 – Enhanced</strong>: więźniowie zaufani, status uzyskany poprzez długotrwałe pozytywne zachowanie.</li>
+          <li><strong>Houseblock 6 – Main Prisoners</strong>: dodatkowy main / overflow.</li>
+        </ul>
+
+        <h3>Segregation Unit (Seg)</h3>
+        <p class="muted">
+          „Niegrzeczni chłopcy” albo osoby pod szczególną ochroną. Trafiają tu za poważne naruszenia (bójki, napady, przemoc wobec officerów/więźniów).
+          Długość pobytu zależy od wagi przewinienia.
+        </p>
+
+        <h3>Radia (Houseblock channels)</h3>
+        <ul class="list">
+          <li>HB1 = <strong>Alpha</strong></li>
+          <li>HB2 = <strong>Bravo</strong></li>
+          <li>HB3 = <strong>Charlie</strong></li>
+          <li>HB4 = <strong>Delta</strong></li>
+          <li>HB5 = <strong>Echo</strong></li>
+          <li>HB6 = <strong>Foxtrot</strong></li>
+        </ul>
+
+        <h3>Wing layout</h3>
+        <p class="muted">
+          Każde skrzydło ma 3 piętra. Na każdym piętrze jest 12 cel: 6 po lewej i 6 po prawej.
+          Format lokalizacji w grze: <strong>HB-WingFloor-Cell</strong> (np. <strong>1-A1-10</strong>).
+        </p>
+
+        <h3>Cells</h3>
+        <ul class="list">
+          <li>Maksymalnie 2 więźniów w celi.</li>
+          <li><strong>High Risk</strong> muszą być <strong>single cell</strong> (zawsze sami).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" class="view" style="display:none">
+      <div class="panel">
+        <h2>🗺️ Wing Map</h2>
+        <div id="mapGate" class="notice"></div>
+
+        <div class="divider"></div>
+
+        <div class="wingControls">
+          <span class="pill"><strong>Houseblock:</strong> <span id="mapHB">-</span></span>
+          <span class="pill"><strong>Assigned Wing:</strong> <span id="mapWing">-</span></span>
+          <label style="margin:0;min-width:220px">
+            View wing:
+            <select id="wingSelect" onchange="renderMap()"></select>
+          </label>
+          <button class="btn ghost" onclick="lockAll()">Lock all cells</button>
+        </div>
+
+        <div id="mapArea"></div>
+
+        <div class="divider"></div>
+
+        <div class="panel" style="margin:0">
+          <h3>Cell Detail</h3>
+          <div id="cellDetail" class="notice">Click a cell to see actions.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="schedule" class="view" style="display:none">
+      <div class="panel">
+        <h2>🗓️ Shift Schedule</h2>
+        <p class="muted">Na razie w wersji podstawowej (możemy dodać różne grafiki dla różnych HB/por dnia).</p>
+        <table class="table">
+          <thead>
+            <tr><th>Time</th><th>Plan</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>07:00</td><td>Briefing</td></tr>
+            <tr><td>07:30</td><td>Unlock for medication</td></tr>
+            <tr><td>08:00</td><td>Unlock for association</td></tr>
+            <tr><td>10:00</td><td>Lock up</td></tr>
+            <tr><td>11:30</td><td>Unlock for lunch</td></tr>
+            <tr><td>12:00</td><td>Lock up + roll count</td></tr>
+            <tr><td>12:30</td><td>Break (all locked)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section id="events" class="view" style="display:none">
+      <div class="panel">
+        <h2>🎛️ Events</h2>
+        <div class="notice">
+          W tej iteracji: minimalne zdarzenia. Docelowo: większość rzeczy uruchamiasz decyzjami (nie automatami).
+          <br/>Cell bells będą później przeniesione do systemu „Requests/Incidents” zależnego od kontekstu.
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="btn" onclick="spawnManualBell()">Manual: trigger cell bell (test)</button>
+        <div id="eventsArea" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section id="log" class="view" style="display:none">
+      <div class="panel">
+        <h2>📖 Shift Log</h2>
+        <div id="logBox" class="log"></div>
+      </div>
+    </section>
+  </main>
+</div>
 
 <script>
-/* EUROPE */
-const europe = [
-["United Kingdom","🇬🇧"],["Poland","🇵🇱"],["Germany","🇩🇪"],["France","🇫🇷"],
-["Italy","🇮🇹"],["Spain","🇪🇸"],["Netherlands","🇳🇱"],["Belgium","🇧🇪"],
-["Sweden","🇸🇪"],["Norway","🇳🇴"],["Denmark","🇩🇰"],["Finland","🇫🇮"],
-["Ireland","🇮🇪"],["Portugal","🇵🇹"],["Greece","🇬🇷"],["Czech Republic","🇨🇿"],
-["Slovakia","🇸🇰"],["Austria","🇦🇹"],["Switzerland","🇨🇭"],["Romania","🇷🇴"],
-["Bulgaria","🇧🇬"],["Hungary","🇭🇺"],["Croatia","🇭🇷"],["Serbia","🇷🇸"],
-["Ukraine","🇺🇦"],["Lithuania","🇱🇹"],["Latvia","🇱🇻"],["Estonia","🇪🇪"]
+/* ---------------------------
+  STORAGE KEYS
+--------------------------- */
+const K_OFFICER = "po_officer_v1";
+const K_SHIFT  = "po_shift_v1";
+const K_MAP    = "po_map_v1"; // current shift map state
+
+/* ---------------------------
+  EUROPE COUNTRIES (broad list)
+--------------------------- */
+const EUROPE = [
+  ["Albania","🇦🇱"],["Andorra","🇦🇩"],["Armenia","🇦🇲"],["Austria","🇦🇹"],["Azerbaijan","🇦🇿"],
+  ["Belarus","🇧🇾"],["Belgium","🇧🇪"],["Bosnia and Herzegovina","🇧🇦"],["Bulgaria","🇧🇬"],
+  ["Croatia","🇭🇷"],["Cyprus","🇨🇾"],["Czechia","🇨🇿"],["Denmark","🇩🇰"],["Estonia","🇪🇪"],
+  ["Finland","🇫🇮"],["France","🇫🇷"],["Georgia","🇬🇪"],["Germany","🇩🇪"],["Greece","🇬🇷"],
+  ["Hungary","🇭🇺"],["Iceland","🇮🇸"],["Ireland","🇮🇪"],["Italy","🇮🇹"],["Kosovo","🇽🇰"],
+  ["Latvia","🇱🇻"],["Liechtenstein","🇱🇮"],["Lithuania","🇱🇹"],["Luxembourg","🇱🇺"],
+  ["Malta","🇲🇹"],["Moldova","🇲🇩"],["Monaco","🇲🇨"],["Montenegro","🇲🇪"],
+  ["Netherlands","🇳🇱"],["North Macedonia","🇲🇰"],["Norway","🇳🇴"],["Poland","🇵🇱"],
+  ["Portugal","🇵🇹"],["Romania","🇷🇴"],["Russia","🇷🇺"],["San Marino","🇸🇲"],["Serbia","🇷🇸"],
+  ["Slovakia","🇸🇰"],["Slovenia","🇸🇮"],["Spain","🇪🇸"],["Sweden","🇸🇪"],["Switzerland","🇨🇭"],
+  ["Turkey","🇹🇷"],["Ukraine","🇺🇦"],["United Kingdom","🇬🇧"],["Vatican City","🇻🇦"]
 ];
 
-const nationSelect = document.getElementById("nation");
-europe.forEach(c=>{
-  const o=document.createElement("option");
-  o.value=c[0]; o.text=c[1]+" "+c[0];
-  nationSelect.add(o);
-});
-
-/* OFFICER SAVE / LOAD */
-function saveOfficer(){
-  const data={
-    first:firstName.value.trim(),
-    last:lastName.value.trim(),
-    alias:alias.value.trim(),
-    address:address.value,
-    gender:gender.value,
-    nation:nation.value
-  };
-  if(!data.last||!data.alias) return alert("Last name and alias required.");
-  localStorage.setItem("officer",JSON.stringify(data));
-  location.reload();
+/* ---------------------------
+  SIMPLE NAME FILTERS (basic)
+--------------------------- */
+const BANNED = ["hitler","nazi","fuck","cunt","shit","pedo","rape","rapist"];
+function isCleanText(s){
+  const t = (s||"").toLowerCase();
+  if(BANNED.some(w => t.includes(w))) return false;
+  // allow letters, spaces, hyphen, apostrophe, dot
+  const ok = /^[a-zA-ZÀ-ž\s'\-\.]+$/.test(s || "");
+  return ok || (s||"").trim()==="";
+}
+function pickFlag(country){
+  const row = EUROPE.find(x => x[0]===country);
+  return row ? row[1] : "🏳️";
 }
 
-const officer=JSON.parse(localStorage.getItem("officer"));
-if(!officer){
-  showTab("setup");
-}else{
-  document.getElementById("mainNav").style.display="block";
-  showTab("briefing");
-  const flag=europe.find(e=>e[0]===officer.nation)[1];
-  const name=officer.address==="alias"?officer.alias:officer.last;
-  officerDisplay.innerHTML=`${flag} Officer ${name}`;
+/* ---------------------------
+  TIME MODEL
+  1 game minute = 30 real seconds
+  (=> 1 game hour = 30 real minutes)
+--------------------------- */
+let gameHour = 7;
+let gameMinute = 0;
+function tickClock(){
+  gameMinute++;
+  if(gameMinute>=60){ gameMinute=0; gameHour++; }
+  document.getElementById("clock").innerText =
+    String(gameHour).padStart(2,"0")+":"+String(gameMinute).padStart(2,"0");
 }
 
-/* TABS */
-function showTab(id){
-  document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+/* ---------------------------
+  NAV / VIEW
+--------------------------- */
+let currentView = "setup";
+function go(id){
+  document.querySelectorAll(".view").forEach(v => v.style.display="none");
   document.getElementById(id).style.display="block";
+  currentView = id;
+
+  document.querySelectorAll(".navBtn").forEach(b => b.classList.remove("active"));
+  const navBtn = document.getElementById("nav-"+id);
+  if(navBtn) navBtn.classList.add("active");
+
+  // refresh on enter
+  if(id==="officer") renderOfficer();
+  if(id==="checkin") renderCheckin();
+  if(id==="briefing") renderBriefing();
+  if(id==="map") { renderMapGate(); renderMap(); }
+  if(id==="log") renderLog();
 }
 
-/* CLOCK */
-let hour=7,minute=0;
-setInterval(()=>{
-  minute++; if(minute>=60){minute=0;hour++;}
-  clock.innerText=`${hour.toString().padStart(2,"0")}:${minute.toString().padStart(2,"0")}`;
-},30000);
+/* ---------------------------
+  OFFICER
+--------------------------- */
+function loadOfficer(){ return JSON.parse(localStorage.getItem(K_OFFICER) || "null"); }
+function saveOfficerObj(o){ localStorage.setItem(K_OFFICER, JSON.stringify(o)); }
 
-/* LOG */
+function saveOfficer(){
+  const first = document.getElementById("firstName").value.trim();
+  const last  = document.getElementById("lastName").value.trim();
+  const alias = document.getElementById("alias").value.trim();
+  const addressPref = document.getElementById("addressPref").value;
+  const gender = document.getElementById("gender").value;
+  const nation = document.getElementById("nation").value;
+
+  if(!last){ alert("Last Name is required."); return; }
+  if(!isCleanText(first) || !isCleanText(last) || !isCleanText(alias)){
+    alert("Inappropriate or invalid characters in name."); return;
+  }
+  if(addressPref==="alias" && !alias){
+    alert("If prisoners should address you by alias, please set an alias."); return;
+  }
+
+  const officer = { first, last, alias, addressPref, gender, nation };
+  saveOfficerObj(officer);
+  bootstrap();
+}
+
+function renderOfficer(){
+  const o = loadOfficer();
+  const s = loadShift();
+
+  if(!o){ go("setup"); return; }
+
+  const displayName = o.addressPref==="alias" ? o.alias : o.last;
+  document.getElementById("officerCard").innerHTML = `
+    <div class="row">
+      <div class="col">
+        <div class="pill">${pickFlag(o.nation)} <strong>Officer</strong> ${displayName}</div>
+        <div class="muted" style="margin-top:8px">
+          Staff name: ${o.first ? (o.first+" "+o.last) : o.last}<br/>
+          Prisoners address: ${o.addressPref === "alias" ? "Alias" : "Surname"}<br/>
+          Gender: ${o.gender}<br/>
+          Nationality: ${o.nation}
+        </div>
+      </div>
+      <div class="col">
+        <div class="notice">
+          <strong>Edit rule:</strong> możesz edytować dane oficera <strong>tylko raz na zmianę</strong>.
+        </div>
+      </div>
+    </div>
+  `;
+
+  // fill edit form
+  document.getElementById("editFirst").value = o.first || "";
+  document.getElementById("editLast").value  = o.last || "";
+  document.getElementById("editAlias").value = o.alias || "";
+  document.getElementById("editAddressPref").value = o.addressPref;
+  document.getElementById("editGender").value = o.gender;
+  fillNationSelect("editNation", o.nation);
+
+  const canEdit = s ? !s.officerEditedThisShift : false;
+  document.getElementById("editNotice").innerHTML = s
+    ? (canEdit
+      ? "Możesz edytować dane oficera (1/1 dostępne na tej zmianie)."
+      : "Edycja zużyta na tej zmianie. Następna edycja dopiero po rozpoczęciu nowej zmiany.")
+    : "Aby edytować na zasadzie 1×/zmiana, rozpocznij najpierw shift w zakładce Check-in.";
+}
+
+function saveOfficerEdit(){
+  const o = loadOfficer();
+  const s = loadShift();
+  if(!o){ go("setup"); return; }
+  if(!s){ alert("Najpierw rozpocznij shift w Check-in."); return; }
+  if(s.officerEditedThisShift){ alert("Edycja już użyta na tej zmianie."); return; }
+
+  const first = document.getElementById("editFirst").value.trim();
+  const last  = document.getElementById("editLast").value.trim();
+  const alias = document.getElementById("editAlias").value.trim();
+  const addressPref = document.getElementById("editAddressPref").value;
+  const gender = document.getElementById("editGender").value;
+  const nation = document.getElementById("editNation").value;
+
+  if(!last){ alert("Last Name is required."); return; }
+  if(!isCleanText(first) || !isCleanText(last) || !isCleanText(alias)){
+    alert("Inappropriate or invalid characters in name."); return;
+  }
+  if(addressPref==="alias" && !alias){
+    alert("If prisoners should address you by alias, please set an alias."); return;
+  }
+
+  saveOfficerObj({ first, last, alias, addressPref, gender, nation });
+  s.officerEditedThisShift = true;
+  saveShift(s);
+  log(`Officer profile edited (used 1 edit this shift).`);
+  bootstrap();
+}
+
+/* ---------------------------
+  SHIFT / PRISON STRUCTURE
+--------------------------- */
+const HB_INFO = [
+  { hb:1, name:"VP Wing",        channel:"Alpha"  },
+  { hb:2, name:"Induction Wing", channel:"Bravo"  },
+  { hb:3, name:"Main Prisoners", channel:"Charlie" },
+  { hb:4, name:"Medication/Detox", channel:"Delta" },
+  { hb:5, name:"Enhanced",      channel:"Echo"    },
+  { hb:6, name:"Main Prisoners", channel:"Foxtrot" },
+];
+const WINGS = ["A","B","C"];
+const KEY_COLORS = ["Blue","Yellow","Red","Green","Grey"];
+
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function loadShift(){ return JSON.parse(localStorage.getItem(K_SHIFT) || "null"); }
+function saveShift(s){ localStorage.setItem(K_SHIFT, JSON.stringify(s)); }
+
+function loadMapState(){ return JSON.parse(localStorage.getItem(K_MAP) || "null"); }
+function saveMapState(m){ localStorage.setItem(K_MAP, JSON.stringify(m)); }
+
+function startNewShift(){
+  const officer = loadOfficer();
+  if(!officer){ go("setup"); return; }
+
+  // random assignment
+  const hbRow = choice(HB_INFO);
+  const wing = choice(WINGS);
+
+  // radio number 2..30 excluding 1 and 10
+  let radioNum = randInt(2,30);
+  while(radioNum===10) radioNum = randInt(2,30);
+
+  const shift = {
+    startedAt: Date.now(),
+    hb: hbRow.hb,
+    hbName: hbRow.name,
+    channel: hbRow.channel,
+    wingAssigned: wing,
+    // items to pick up:
+    radio: null,  // {channel, num}
+    keys: null,    // {color, num}
+    bwv: false,
+    checkinComplete: false,
+    officerEditedThisShift: false,
+    // briefing info
+    unlockRoll: randInt(30, 65),
+    highRiskCount: randInt(0, 3),
+    acctCount: randInt(0, 2),
+    intel: choice([
+      "Quiet wing expected, but keep an eye on debt tension.",
+      "Intel suggests possible contraband movement.",
+      "Recent complaints about medication delays.",
+      "Previous shift flagged manipulative cell bell use."
+    ]),
+    // staff detail (random names)
+    staff: generateStaffDetail(hbRow.hb, wing),
+    // reserved radio for this shift (player must pick it up)
+    radioOffer: { channel: hbRow.channel, num: radioNum }
+  };
+  saveShift(shift);
+
+  // reset / create map state for this shift
+  const map = createFreshMapState(shift.hb);
+  saveMapState(map);
+
+  log(`New shift assigned: HB${shift.hb} ${shift.hbName}, Wing ${shift.wingAssigned}.`);
+  renderCheckin();
+  go("checkin");
+}
+
+function generateStaffDetail(hb, wing){
+  const surnames = ["Smith","Johnson","Brown","Taylor","Wilson","Davies","Evans","Thomas","Roberts","Walker","Wright","Thompson"];
+  const roles = ["PO","PO","PO","PO","SO","CM"]; // SO and CM included
+  const list = [];
+  for(let i=0;i<6;i++){
+    const role = roles[i] || "PO";
+    const name = "Officer " + choice(surnames);
+    let assigned = `HB${hb} Wing ${wing}`;
+    if(role==="SO") assigned = `Supervising Officer (global)`;
+    if(role==="CM") assigned = `Custodial Manager (global)`;
+    list.push({ name, role, assigned });
+  }
+  return list;
+}
+
+function createFreshMapState(hb){
+  // map state includes open/closed for each cell for wings A/B/C, floors 1..3, cells 1..12
+  const state = { hb, cells:{} };
+  for(const w of WINGS){
+    for(let f=1; f<=3; f++){
+      for(let c=1; c<=12; c++){
+        const cellId = `${hb}-${w}${f}-${String(c).padStart(2,"0")}`;
+        state.cells[cellId] = { isOpen:false };
+      }
+    }
+  }
+  return state;
+}
+
+/* ---------------------------
+  CHECK-IN
+--------------------------- */
+function renderCheckin(){
+  const s = loadShift();
+  const o = loadOfficer();
+  if(!o){ go("setup"); return; }
+
+  if(!s){
+    document.getElementById("checkinState").innerHTML =
+      `<div class="notice">No active shift yet. Click <strong>Start new shift</strong> to get a random assignment.</div>`;
+    document.getElementById("staffDetail").innerHTML = `<div class="muted">—</div>`;
+    document.getElementById("radioBox").innerHTML = `—`;
+    document.getElementById("keysBox").innerHTML = `—`;
+    document.getElementById("bwvBox").innerHTML = `—`;
+    document.getElementById("shiftTag").innerText = "";
+    return;
+  }
+
+  document.getElementById("shiftTag").innerText =
+    `Assigned: HB${s.hb} ${s.hbName} • Wing ${s.wingAssigned} • Channel ${s.channel}`;
+
+  document.getElementById("checkinState").innerHTML = s.checkinComplete
+    ? `<div class="notice"><strong>Check-in complete.</strong> You can proceed or review equipment.</div>`
+    : `<div class="notice"><strong>Check-in pending.</strong> Pick radio + keys, decide BWV, then proceed.</div>`;
+
+  // staff detail table
+  let html = `<table class="table"><thead><tr><th>Name</th><th>Role</th><th>Assignment</th></tr></thead><tbody>`;
+  s.staff.forEach(r=>{
+    html += `<tr><td>${r.name}</td><td>${r.role}</td><td>${r.assigned}</td></tr>`;
+  });
+  html += `</tbody></table>`;
+  document.getElementById("staffDetail").innerHTML = html;
+
+  // radio box
+  const r = s.radio;
+  document.getElementById("radioBox").innerHTML = r
+    ? `You have <strong>${r.channel}</strong> radio • Number <strong>${r.num}</strong> (1 reserved SO, 10 reserved CM)`
+    : `Not picked up yet. Suggested: <strong>${s.radioOffer.channel}</strong> • Number <strong>${s.radioOffer.num}</strong>`;
+
+  // keys box
+  const k = s.keys;
+  document.getElementById("keysBox").innerHTML = k
+    ? `Keys: <strong>${k.color}</strong> • Key No. <strong>${k.num}</strong>`
+    : `Not picked up yet. You must carry keys to operate doors/cells.`;
+
+  // BWV box
+  document.getElementById("bwvBox").innerHTML = s.bwv
+    ? `BWV: <strong>ON PERSON</strong> (may protect you, may limit discretion)`
+    : `BWV: <strong>NOT TAKEN</strong> (management prefers you take it, sometimes look away)`;
+}
+
+function pickupRadio(){
+  const s = loadShift();
+  if(!s){ alert("Start shift first."); return; }
+  if(s.radio){ log("Radio already picked up."); return; }
+  s.radio = {...s.radioOffer};
+  saveShift(s);
+  log(`Radio picked up: ${s.radio.channel} #${s.radio.num}.`);
+  renderCheckin();
+}
+
+function pickupKeys(){
+  const s = loadShift();
+  if(!s){ alert("Start shift first."); return; }
+  if(s.keys){ log("Keys already picked up."); return; }
+  s.keys = { color: choice(KEY_COLORS), num: randInt(1,50) };
+  saveShift(s);
+  log(`Keys picked up: ${s.keys.color} Key #${s.keys.num}.`);
+  renderCheckin();
+}
+
+function toggleBWV(){
+  const s = loadShift();
+  if(!s){ alert("Start shift first."); return; }
+  s.bwv = !s.bwv;
+  saveShift(s);
+  log(`BWV ${s.bwv ? "taken" : "left in locker"}.`);
+  renderCheckin();
+}
+
+function completeCheckin(){
+  const s = loadShift();
+  if(!s){ alert("Start shift first."); return; }
+  if(!s.radio || !s.keys){
+    alert("Pick up radio and keys before proceeding."); return;
+  }
+  s.checkinComplete = true;
+  saveShift(s);
+  log("Check-in complete. Proceeding to briefing.");
+  go("briefing");
+}
+
+/* ---------------------------
+  BRIEFING (more detailed)
+--------------------------- */
+function renderBriefing(){
+  const s = loadShift();
+  const o = loadOfficer();
+  if(!o){ go("setup"); return; }
+
+  if(!s){
+    document.getElementById("briefingBox").innerHTML =
+      `<div class="notice">No active shift. Go to <strong>Check-in</strong> and start a new shift.</div>`;
+    return;
+  }
+  if(!s.checkinComplete){
+    document.getElementById("briefingBox").innerHTML =
+      `<div class="notice">Check-in not complete. Go to <strong>Check-in</strong> to pick radio/keys and proceed.</div>`;
+    return;
+  }
+
+  const displayName = o.addressPref==="alias" ? (o.alias || o.last) : o.last;
+  const flag = pickFlag(o.nation);
+
+  document.getElementById("briefingBox").innerHTML = `
+    <div class="row">
+      <div class="col">
+        <div class="pill">${flag} <strong>Officer</strong> ${displayName}</div>
+        <div class="muted" style="margin-top:8px">
+          Assignment: <strong>HB${s.hb} ${s.hbName}</strong> • Wing <strong>${s.wingAssigned}</strong><br/>
+          Radio: <strong>${s.radio.channel} #${s.radio.num}</strong><br/>
+          Keys: <strong>${s.keys.color} #${s.keys.num}</strong><br/>
+          BWV: <strong>${s.bwv ? "Taken" : "Not taken"}</strong>
+        </div>
+      </div>
+      <div class="col">
+        <div class="notice">
+          <strong>Unlock roll count:</strong> ${s.unlockRoll} prisoners under your care<br/>
+          <strong>High Risk:</strong> ${s.highRiskCount}<br/>
+          <strong>ACCT open:</strong> ${s.acctCount}<br/>
+          <strong>Intel:</strong> ${s.intel}
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3>Quick reminders</h3>
+    <ul class="list">
+      <li>Emergency bell misuse may lead to IEP action — decision is yours.</li>
+      <li>Key check every evening — remember color & number.</li>
+      <li>BWV can help or complicate future situations.</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <button class="btn ok" onclick="go('map')">Go to Wing Map</button>
+    <button class="btn ghost" onclick="go('schedule')">View Schedule</button>
+  `;
+}
+
+/* ---------------------------
+  MAP
+--------------------------- */
+function renderMapGate(){
+  const s = loadShift();
+  const gate = document.getElementById("mapGate");
+  if(!s){
+    gate.innerHTML = `No active shift. Start a shift in <strong>Check-in</strong>.`;
+    return;
+  }
+  if(!s.checkinComplete){
+    gate.innerHTML = `Check-in not complete. Finish <strong>Check-in</strong> to use wing map (keys & radio required).`;
+    return;
+  }
+  gate.innerHTML = `You have keys and access. Click cells to open/close. Format: <strong>HB-WingFloor-Cell</strong> (e.g. <strong>${s.hb}-${s.wingAssigned}1-10</strong>).`;
+}
+
+function populateWingSelect(){
+  const s = loadShift();
+  const sel = document.getElementById("wingSelect");
+  sel.innerHTML = "";
+  WINGS.forEach(w=>{
+    const opt = document.createElement("option");
+    opt.value = w;
+    opt.textContent = `Wing ${w}`;
+    sel.appendChild(opt);
+  });
+  if(s) sel.value = s.wingAssigned;
+}
+
+function renderMap(){
+  const s = loadShift();
+  const map = loadMapState();
+  if(!s || !map) return;
+
+  populateWingSelect();
+  document.getElementById("mapHB").innerText = `HB${s.hb} ${s.hbName}`;
+  document.getElementById("mapWing").innerText = s.wingAssigned;
+
+  const wing = document.getElementById("wingSelect").value;
+  const hb = s.hb;
+
+  const area = document.getElementById("mapArea");
+  area.innerHTML = "";
+
+  for(let floor=1; floor<=3; floor++){
+    const wrap = document.createElement("div");
+    wrap.className = "cellBox";
+
+    const title = document.createElement("div");
+    title.className = "floorTitle";
+    title.textContent = `Floor ${floor} (Left 6 / Right 6)`;
+    wrap.appendChild(title);
+
+    const leftRow = document.createElement("div");
+    leftRow.className = "cellsRow";
+    const rightRow = document.createElement("div");
+    rightRow.className = "cellsRow";
+
+    // 1..6 left, 7..12 right
+    for(let c=1; c<=6; c++){
+      const cellId = `${hb}-${wing}${floor}-${String(c).padStart(2,"0")}`;
+      leftRow.appendChild(makeCellButton(cellId, map));
+    }
+    for(let c=7; c<=12; c++){
+      const cellId = `${hb}-${wing}${floor}-${String(c).padStart(2,"0")}`;
+      rightRow.appendChild(makeCellButton(cellId, map));
+    }
+
+    const leftLabel = document.createElement("div");
+    leftLabel.className="muted small";
+    leftLabel.textContent="Left side";
+    const rightLabel = document.createElement("div");
+    rightLabel.className="muted small";
+    rightLabel.textContent="Right side";
+
+    wrap.appendChild(leftLabel);
+    wrap.appendChild(leftRow);
+    wrap.appendChild(rightLabel);
+    wrap.appendChild(rightRow);
+
+    area.appendChild(wrap);
+  }
+}
+
+function makeCellButton(cellId, map){
+  const btn = document.createElement("button");
+  btn.className = "cellBtn " + (map.cells[cellId]?.isOpen ? "open" : "locked");
+  btn.textContent = cellId.split("-").slice(1).join("-"); // WingFloor-Cell
+  btn.title = cellId;
+  btn.onclick = () => openCell(cellId);
+  return btn;
+}
+
+function openCell(cellId){
+  const s = loadShift();
+  const map = loadMapState();
+  if(!s || !map) return;
+
+  // toggle
+  map.cells[cellId].isOpen = !map.cells[cellId].isOpen;
+  saveMapState(map);
+
+  const state = map.cells[cellId].isOpen ? "OPENED" : "CLOSED";
+  log(`Cell ${cellId} ${state}.`);
+
+  // detail
+  document.getElementById("cellDetail").innerHTML = `
+    <div><strong>Cell:</strong> ${cellId}</div>
+    <div class="muted">Actions (basic):</div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" onclick="log('Cell check logged for ${cellId}')">Log cell check</button>
+      <button class="btn warn" onclick="log('Knock & speak at ${cellId}')">Knock & speak</button>
+      <button class="btn ghost" onclick="log('No action taken at ${cellId}')">No action</button>
+    </div>
+    <div class="notice" style="margin-top:10px">
+      W przyszłości dodamy: prisoners in cell, occupancy (max 2), high-risk solo, dynamiczne statusy.
+    </div>
+  `;
+
+  renderMap();
+}
+
+function lockAll(){
+  const s = loadShift();
+  const map = loadMapState();
+  if(!s || !map) return;
+  Object.keys(map.cells).forEach(k => map.cells[k].isOpen=false);
+  saveMapState(map);
+  log("All cells locked.");
+  renderMap();
+}
+
+/* ---------------------------
+  EVENTS (manual test)
+--------------------------- */
+function spawnManualBell(){
+  const s = loadShift();
+  if(!s || !s.checkinComplete){
+    alert("Finish check-in first."); return;
+  }
+  const loc = `${s.hb}-${s.wingAssigned}${randInt(1,3)}-${String(randInt(1,12)).padStart(2,"0")}`;
+  const area = document.getElementById("eventsArea");
+  const div = document.createElement("div");
+  div.className="panel";
+  div.style.margin="0";
+  div.innerHTML = `
+    <h3>🔔 Emergency Cell Bell</h3>
+    <div class="muted">Location: <strong>${loc}</strong></div>
+    <div style="margin-top:8px">Prisoner: "Could you bring me toilet paper?"</div>
+    <div class="divider"></div>
+    <button class="btn" onclick="resolveBell(this,'Responded – handled request', '${loc}')">Respond</button>
+    <button class="btn warn" onclick="resolveBell(this,'Delayed response', '${loc}')">Delay</button>
+  `;
+  area.prepend(div);
+  log(`Cell bell triggered (manual test) at ${loc}.`);
+}
+function resolveBell(btn, result, loc){
+  log(`${result} at ${loc}.`);
+  const card = btn.closest(".panel");
+  if(card) card.remove();
+}
+
+/* ---------------------------
+  LOG
+--------------------------- */
+function loadLog(){
+  // keep log in memory only for now, but we can persist later
+  return window.__LOG || [];
+}
+function saveLog(arr){
+  window.__LOG = arr;
+}
 function log(msg){
-  logContainer.innerHTML="• "+msg+"<br>"+logContainer.innerHTML;
+  const arr = loadLog();
+  const time = document.getElementById("clock").innerText || "--:--";
+  arr.unshift(`[${time}] ${msg}`);
+  saveLog(arr);
+  renderLog();
+}
+function renderLog(){
+  const box = document.getElementById("logBox");
+  const arr = loadLog();
+  box.innerHTML = arr.length ? arr.map(x => "• "+x).join("<br>") : "<span class='muted'>No entries yet.</span>";
 }
 
-/* CELL BELLS */
-setInterval(()=>{
-  if(Math.random()<0.1) createBell();
-},30000);
-
-function createBell(){
-  const d=document.createElement("div");
-  d.className="cellbell";
-  d.innerHTML=`
-    Cell bell from 1-A1-10<br><br>
-    <button onclick="respond(this)">Respond</button>
-    <button class="warn" onclick="delay(this)">Delay</button>
-  `;
-  bellsContainer.appendChild(d);
-  log("Cell bell activated at 1-A1-10");
+/* ---------------------------
+  NATION SELECTS
+--------------------------- */
+function fillNationSelect(selectId, selected){
+  const sel = document.getElementById(selectId);
+  sel.innerHTML="";
+  EUROPE.forEach(([name,flag])=>{
+    const opt = document.createElement("option");
+    opt.value=name;
+    opt.textContent=`${flag} ${name}`;
+    sel.appendChild(opt);
+  });
+  if(selected) sel.value = selected;
 }
 
-function respond(btn){
-  btn.parentElement.innerHTML=`
-    Prisoner requests toilet paper.<br><br>
-    <button onclick="log('Advice given')">Advice</button>
-    <button onclick="log('Verbal warning')">Warning</button>
-    <button class="bad" onclick="log('Negative IEP')">Negative IEP</button>
-  `;
+/* ---------------------------
+  BOOTSTRAP
+--------------------------- */
+function resetAll(){
+  localStorage.removeItem(K_OFFICER);
+  localStorage.removeItem(K_SHIFT);
+  localStorage.removeItem(K_MAP);
+  window.__LOG = [];
+  bootstrap();
 }
 
-function delay(btn){
-  log("Response delayed");
-  btn.parentElement.remove();
+function loadShift(){
+  return JSON.parse(localStorage.getItem(K_SHIFT) || "null");
 }
 
-/* MAP */
-function openCell(cell){
-  log("Cell opened: "+cell);
+function bootstrap(){
+  // init nation select in setup
+  fillNationSelect("nation", "United Kingdom");
+  // init edit nation select will be filled in renderOfficer()
+
+  // officer tag
+  const o = loadOfficer();
+  const tag = document.getElementById("officerTag");
+  if(o){
+    const displayName = o.addressPref==="alias" ? (o.alias || o.last) : o.last;
+    tag.innerText = `${pickFlag(o.nation)} Officer ${displayName}`;
+    document.getElementById("nav-setup").style.display="none";
+  }else{
+    tag.innerText = "No officer profile";
+    document.getElementById("nav-setup").style.display="block";
+  }
+
+  // start clock
+  document.getElementById("clock").innerText =
+    String(gameHour).padStart(2,"0")+":"+String(gameMinute).padStart(2,"0");
+  if(!window.__CLOCK_STARTED){
+    window.__CLOCK_STARTED = true;
+    setInterval(tickClock, 30000); // 1 game minute per 30s
+  }
+
+  // decide initial view
+  if(!o){
+    go("setup");
+  }else{
+    // ensure checkin is visible for start-of-shift flow
+    go("checkin");
+    renderOfficer(); // keep officer tab ready
+  }
+
+  // refresh shift tag
+  renderCheckin();
+  renderLog();
 }
+
+bootstrap();
 </script>
-
 </body>
 </html>
 
