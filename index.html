@@ -30,16 +30,16 @@
   .brand{font-weight:800;letter-spacing:.5px}
   .topRight{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;justify-content:flex-end;}
   .clock{color:var(--accent);font-size:14px;font-weight:700}
-  .officerTag{font-size:13px;color:var(--muted)}
+  .tag{font-size:13px;color:var(--muted)}
   .layout{display:flex;min-height:calc(100vh - 54px);}
   aside{
-    width:240px; background:var(--panel); border-right:1px solid var(--border);
+    width:250px; background:var(--panel); border-right:1px solid var(--border);
     padding:12px; box-sizing:border-box;
   }
   .navBtn{
     width:100%; text-align:left; padding:10px 10px; margin:6px 0;
-    border-radius:8px; border:1px solid transparent; background:transparent; color:var(--text);
-    cursor:pointer; font-weight:700;
+    border-radius:10px; border:1px solid transparent; background:transparent; color:var(--text);
+    cursor:pointer; font-weight:800;
   }
   .navBtn:hover{border-color:var(--border); background:#0b1224;}
   .navBtn.active{border-color:var(--accent); background:#0b1224;}
@@ -47,24 +47,24 @@
   main{flex:1; padding:14px; box-sizing:border-box;}
   .panel{
     background:var(--panel); border:1px solid var(--border);
-    border-radius:12px; padding:14px; margin-bottom:14px;
+    border-radius:14px; padding:14px; margin-bottom:14px;
   }
   h2,h3{margin:0 0 10px 0;color:var(--accent)}
   h4{margin:14px 0 8px 0;color:var(--text)}
   .muted{color:var(--muted)}
   .row{display:flex;gap:12px;flex-wrap:wrap}
-  .col{flex:1;min-width:240px}
+  .col{flex:1;min-width:260px}
   label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
   input,select{
     width:100%; box-sizing:border-box; padding:9px 10px;
-    border-radius:10px; border:1px solid var(--border);
+    border-radius:12px; border:1px solid var(--border);
     background:#0b1224; color:var(--text);
   }
   .btn{
     background:var(--btn); border:none; color:white;
-    padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:800;
+    padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:900;
   }
-  .btn:hover{filter:brightness(1.07)}
+  .btn:hover{filter:brightness(1.08)}
   .btn.warn{background:var(--warn)}
   .btn.bad{background:var(--bad)}
   .btn.ok{background:var(--ok)}
@@ -82,32 +82,11 @@
     border-bottom:1px solid var(--border);
     padding:8px 6px;text-align:left;vertical-align:top;
   }
-  .table th{color:var(--muted);font-weight:700}
+  .table th{color:var(--muted);font-weight:800}
   .log{font-size:13px;line-height:1.45}
-  .cellGrid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:10px;
-  }
-  .wingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-  .cellBox{
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:10px;
-    background:#0b1224;
-  }
-  .floorTitle{font-weight:800;color:var(--text);margin-bottom:6px}
-  .cellsRow{display:grid;grid-template-columns:repeat(6, minmax(38px, 1fr));gap:6px;margin-bottom:8px}
-  .cellBtn{
-    padding:8px 6px;border-radius:10px;border:1px solid var(--border);
-    background:#050b18;color:var(--text);cursor:pointer;font-weight:800;font-size:12px;
-  }
-  .cellBtn.open{border-color:var(--ok); background:#05210f}
-  .cellBtn.locked{border-color:#475569}
-  .cellBtn:hover{filter:brightness(1.08)}
   .notice{
     border:1px dashed var(--border);
-    border-radius:12px;
+    border-radius:14px;
     padding:10px;
     background:#071027;
     color:var(--muted);
@@ -115,6 +94,62 @@
     line-height:1.4;
   }
   .divider{height:1px;background:var(--border);margin:12px 0}
+
+  /* MAP */
+  .wingControls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .cellBox{
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:10px;
+    background:#0b1224;
+    margin-bottom:10px;
+  }
+  .floorTitle{font-weight:900;color:var(--text);margin-bottom:6px}
+  .cellsRow{display:grid;grid-template-columns:repeat(6, minmax(40px, 1fr));gap:6px;margin-bottom:8px}
+  .cellBtn{
+    padding:8px 6px;border-radius:12px;border:1px solid var(--border);
+    background:#050b18;color:var(--text);cursor:pointer;font-weight:900;font-size:12px;
+  }
+  .cellBtn.open{border-color:var(--ok); background:#05210f}
+  .cellBtn.locked{border-color:#475569}
+  .cellBtn.bell{border-color:var(--warn)}
+  .cellBtn:hover{filter:brightness(1.08)}
+
+  /* PSCS */
+  .pscsGrid{
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:12px;
+  }
+  .card{
+    border:1px solid var(--border);
+    background:#0b1224;
+    border-radius:14px;
+    padding:12px;
+  }
+  .prisonerRow{
+    border:1px solid var(--border);
+    background:#050b18;
+    border-radius:12px;
+    padding:8px;
+    margin:6px 0;
+    cursor:pointer;
+  }
+  .prisonerRow:hover{filter:brightness(1.08)}
+  .avatar{
+    width:84px;height:84px;border-radius:16px;border:1px solid var(--border);
+    background:#050b18;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:22px;color:var(--text);
+    overflow:hidden;
+  }
+  .miniTabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .miniTabs button{
+    padding:7px 10px;border-radius:999px;border:1px solid var(--border);
+    background:#050b18;color:var(--text);cursor:pointer;font-weight:900;
+  }
+  .miniTabs button.active{border-color:var(--accent)}
+  .kv{display:grid;grid-template-columns: 170px 1fr;gap:8px;font-size:13px}
+  .kv div:nth-child(odd){color:var(--muted)}
   .small{font-size:12px}
 </style>
 </head>
@@ -125,9 +160,9 @@
   <div class="topRight">
     <div>
       <div class="clock" id="clock">--:--</div>
-      <div class="officerTag" id="officerTag"></div>
+      <div class="tag" id="officerTag"></div>
     </div>
-    <div class="officerTag" id="shiftTag"></div>
+    <div class="tag" id="shiftTag"></div>
   </div>
 </header>
 
@@ -139,14 +174,15 @@
     <button class="navBtn" id="nav-briefing" onclick="go('briefing')">Briefing</button>
     <button class="navBtn" id="nav-prison" onclick="go('prison')">Prison</button>
     <button class="navBtn" id="nav-map" onclick="go('map')">Wing Map</button>
+    <button class="navBtn" id="nav-pscs" onclick="go('pscs')">PSCS</button>
     <button class="navBtn" id="nav-schedule" onclick="go('schedule')">Schedule</button>
     <button class="navBtn" id="nav-events" onclick="go('events')">Events</button>
     <button class="navBtn" id="nav-log" onclick="go('log')">Shift Log</button>
 
     <div class="navHint">
-      <div><strong>Tip:</strong> Ta gra jest „powolna”.</div>
+      <div><strong>Tempo:</strong> gra jest „powolna”.</div>
       <div>1h w grze = 30 min w realu.</div>
-      <div class="small">Decyzje są Twoje — system niczego nie narzuca automatycznie.</div>
+      <div class="small">PSCS jest źródłem prawdy o osadzonych i celach.</div>
     </div>
   </aside>
 
@@ -155,7 +191,7 @@
     <section id="setup" class="view">
       <div class="panel">
         <h2>👮 Officer Setup</h2>
-        <p class="muted">Tworzysz profil oficera. Dane zostaną zapisane na urządzeniu (localStorage) i będą ładowane automatycznie.</p>
+        <p class="muted">Profil oficera zapisuje się lokalnie w przeglądarce.</p>
 
         <div class="row">
           <div class="col">
@@ -166,7 +202,7 @@
             <input id="lastName" placeholder="np. Ciesielka"/>
 
             <label>Alias / Callsign (opcjonalnie)</label>
-            <input id="alias" placeholder="np. Fox / Brick / Kosa (opcjonalnie)"/>
+            <input id="alias" placeholder="opcjonalnie"/>
           </div>
 
           <div class="col">
@@ -193,8 +229,8 @@
         </div>
 
         <div class="notice">
-          <strong>Uwaga:</strong> Nie używamy imion wobec więźniów. Imię jest tylko dla staffu.
-          <br/>Adresowanie przez więźniów: nazwisko lub alias (jeśli podany).
+          <strong>Uwaga:</strong> Imię jest dla staffu. Więźniowie zwracają się po nazwisku albo aliasie (jeśli ustawisz).
+          <br/>Alias jest opcjonalny — jeśli wybierzesz „Alias”, musisz go podać.
         </div>
       </div>
     </section>
@@ -243,7 +279,7 @@
     <section id="checkin" class="view" style="display:none">
       <div class="panel">
         <h2>🧾 Check-in (Before Wing)</h2>
-        <p class="muted">Najpierw sprawdzasz szczegóły zmiany, potem dobierasz radio, klucze i opcjonalnie BWV.</p>
+        <p class="muted">Losowy przydział miejsca pracy na zmianę. Potem dobierasz radio, klucze i opcjonalnie BWV.</p>
 
         <div id="checkinState"></div>
 
@@ -251,7 +287,7 @@
 
         <div class="row">
           <button class="btn ok" onclick="startNewShift()">Start new shift (random assignment)</button>
-          <button class="btn ghost" onclick="loadShift()">Refresh shift data</button>
+          <button class="btn ghost" onclick="loadShiftAndRender()">Refresh shift data</button>
         </div>
 
         <div class="divider"></div>
@@ -281,7 +317,8 @@
 
         <button class="btn ok" onclick="completeCheckin()">Proceed to Briefing</button>
         <div class="notice" style="margin-top:10px">
-          <strong>Tip:</strong> Dobór radia zależy od Houseblocka (Alpha–Foxtrot). Numer jest losowy (2–30), bez 1 i 10.
+          <strong>Radio channels:</strong> HB1 Alpha • HB2 Bravo • HB3 Charlie • HB4 Delta • HB5 Echo • HB6 Foxtrot.<br/>
+          Radio numbers: 2–30 (1 reserved SO, 10 reserved CM).
         </div>
       </div>
     </section>
@@ -304,10 +341,9 @@
         <ul class="list">
           <li><strong>Houseblock 1 – VP (Vulnerable Prisoners)</strong>: więźniowie pod specjalną ochroną (np. gwałciciele, pedofile, byli policjanci), wymagają separacji od general population.</li>
           <li><strong>Houseblock 2 – Induction Wing</strong>: nowi więźniowie (ok. 2 tygodnie), później relokacja zależnie od potrzeb i dostępnych miejsc.</li>
-          <li><strong>Houseblock 3 – Main Prisoners</strong>: general population (różne wyroki i potrzeby bez separacji).</li>
-          <li><strong>Houseblock 4 – Medication & Detox</strong>: główny nacisk na medication i detoks (np. methadone).</li>
-          <li><strong>Houseblock 5 – Enhanced</strong>: więźniowie zaufani, status uzyskany poprzez długotrwałe pozytywne zachowanie.</li>
-          <li><strong>Houseblock 6 – Main Prisoners</strong>: dodatkowy main / overflow.</li>
+          <li><strong>Houseblock 3 & 6 – Main Prisoners</strong>: general population (różne wyroki, bez szczególnej separacji).</li>
+          <li><strong>Houseblock 4 – Medication & Detox</strong>: nacisk na medication i detoks (np. methadone).</li>
+          <li><strong>Houseblock 5 – Enhanced</strong>: zaufani więźniowie, status za długo utrzymywane dobre zachowanie.</li>
         </ul>
 
         <h3>Segregation Unit (Seg)</h3>
@@ -316,26 +352,16 @@
           Długość pobytu zależy od wagi przewinienia.
         </p>
 
-        <h3>Radia (Houseblock channels)</h3>
-        <ul class="list">
-          <li>HB1 = <strong>Alpha</strong></li>
-          <li>HB2 = <strong>Bravo</strong></li>
-          <li>HB3 = <strong>Charlie</strong></li>
-          <li>HB4 = <strong>Delta</strong></li>
-          <li>HB5 = <strong>Echo</strong></li>
-          <li>HB6 = <strong>Foxtrot</strong></li>
-        </ul>
-
         <h3>Wing layout</h3>
         <p class="muted">
           Każde skrzydło ma 3 piętra. Na każdym piętrze jest 12 cel: 6 po lewej i 6 po prawej.
-          Format lokalizacji w grze: <strong>HB-WingFloor-Cell</strong> (np. <strong>1-A1-10</strong>).
+          Format lokalizacji: <strong>HB-WingFloor-Cell</strong> (np. <strong>1-A1-10</strong>).
         </p>
 
         <h3>Cells</h3>
         <ul class="list">
           <li>Maksymalnie 2 więźniów w celi.</li>
-          <li><strong>High Risk</strong> muszą być <strong>single cell</strong> (zawsze sami).</li>
+          <li><strong>High Risk</strong> muszą być <strong>single cell</strong>.</li>
         </ul>
       </div>
     </section>
@@ -351,10 +377,12 @@
         <div class="wingControls">
           <span class="pill"><strong>Houseblock:</strong> <span id="mapHB">-</span></span>
           <span class="pill"><strong>Assigned Wing:</strong> <span id="mapWing">-</span></span>
+
           <label style="margin:0;min-width:220px">
             View wing:
             <select id="wingSelect" onchange="renderMap()"></select>
           </label>
+
           <button class="btn ghost" onclick="lockAll()">Lock all cells</button>
         </div>
 
@@ -364,7 +392,37 @@
 
         <div class="panel" style="margin:0">
           <h3>Cell Detail</h3>
-          <div id="cellDetail" class="notice">Click a cell to see actions.</div>
+          <div id="cellDetail" class="notice">Click a cell to see actions & occupants.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PSCS -->
+    <section id="pscs" class="view" style="display:none">
+      <div class="panel">
+        <h2>💻 PSCS – Prison Service Computer System</h2>
+        <p class="muted">Tu są najważniejsze dane więźniów. Numery więzienne są stałe i zapisane lokalnie.</p>
+
+        <div class="pscsGrid">
+          <div class="card">
+            <label>Search</label>
+            <input id="pscsSearch" placeholder="surname / prison number / location..." oninput="renderPSCSList()"/>
+
+            <div class="divider"></div>
+
+            <div class="pill" style="justify-content:space-between;width:100%">
+              <span><strong>In prison:</strong> <span id="pscsTotal">0</span></span>
+              <span class="muted small">HB<span id="pscsHB">-</span></span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div id="pscsList"></div>
+          </div>
+
+          <div class="card">
+            <div id="pscsProfile" class="notice">Select a prisoner from the list.</div>
+          </div>
         </div>
       </div>
     </section>
@@ -373,11 +431,8 @@
     <section id="schedule" class="view" style="display:none">
       <div class="panel">
         <h2>🗓️ Shift Schedule</h2>
-        <p class="muted">Na razie w wersji podstawowej (możemy dodać różne grafiki dla różnych HB/por dnia).</p>
         <table class="table">
-          <thead>
-            <tr><th>Time</th><th>Plan</th></tr>
-          </thead>
+          <thead><tr><th>Time</th><th>Plan</th></tr></thead>
           <tbody>
             <tr><td>07:00</td><td>Briefing</td></tr>
             <tr><td>07:30</td><td>Unlock for medication</td></tr>
@@ -396,8 +451,8 @@
       <div class="panel">
         <h2>🎛️ Events</h2>
         <div class="notice">
-          W tej iteracji: minimalne zdarzenia. Docelowo: większość rzeczy uruchamiasz decyzjami (nie automatami).
-          <br/>Cell bells będą później przeniesione do systemu „Requests/Incidents” zależnego od kontekstu.
+          Na razie minimalnie. Większość akcji będziemy odpalać decyzjami gracza, nie automatami.
+          <br/>Tu jest tylko przycisk testowy, żeby widzieć lokacje i flow.
         </div>
 
         <div class="divider"></div>
@@ -419,14 +474,17 @@
 
 <script>
 /* ---------------------------
-  STORAGE KEYS
+  STORAGE
 --------------------------- */
-const K_OFFICER = "po_officer_v1";
-const K_SHIFT  = "po_shift_v1";
-const K_MAP    = "po_map_v1"; // current shift map state
+const K_OFFICER  = "po_officer_v2";
+const K_SHIFT    = "po_shift_v2";
+const K_MAP      = "po_map_v2";        // doors (open/closed)
+const K_PRISONERS= "po_prisoners_v2";  // prisoner db (persistent)
+const K_OCC      = "po_occupancy_v2";  // cell -> prisonerIds (persistent)
+const K_USEDPN  = "po_used_prison_numbers_v2"; // set of prison numbers
 
 /* ---------------------------
-  EUROPE COUNTRIES (broad list)
+  EUROPE (Officer nationality)
 --------------------------- */
 const EUROPE = [
   ["Albania","🇦🇱"],["Andorra","🇦🇩"],["Armenia","🇦🇲"],["Austria","🇦🇹"],["Azerbaijan","🇦🇿"],
@@ -442,26 +500,25 @@ const EUROPE = [
   ["Turkey","🇹🇷"],["Ukraine","🇺🇦"],["United Kingdom","🇬🇧"],["Vatican City","🇻🇦"]
 ];
 
-/* ---------------------------
-  SIMPLE NAME FILTERS (basic)
---------------------------- */
-const BANNED = ["hitler","nazi","fuck","cunt","shit","pedo","rape","rapist"];
-function isCleanText(s){
-  const t = (s||"").toLowerCase();
-  if(BANNED.some(w => t.includes(w))) return false;
-  // allow letters, spaces, hyphen, apostrophe, dot
-  const ok = /^[a-zA-ZÀ-ž\s'\-\.]+$/.test(s || "");
-  return ok || (s||"").trim()==="";
-}
 function pickFlag(country){
   const row = EUROPE.find(x => x[0]===country);
   return row ? row[1] : "🏳️";
 }
 
 /* ---------------------------
+  BASIC FILTERS
+--------------------------- */
+const BANNED = ["hitler","nazi","fuck","cunt","shit","pedo","rape","rapist"];
+function isCleanText(s){
+  const t = (s||"").toLowerCase();
+  if(BANNED.some(w => t.includes(w))) return false;
+  const ok = /^[a-zA-ZÀ-ž\s'\-\.]+$/.test(s || "");
+  return ok || (s||"").trim()==="";
+}
+
+/* ---------------------------
   TIME MODEL
   1 game minute = 30 real seconds
-  (=> 1 game hour = 30 real minutes)
 --------------------------- */
 let gameHour = 7;
 let gameMinute = 0;
@@ -473,24 +530,40 @@ function tickClock(){
 }
 
 /* ---------------------------
-  NAV / VIEW
+  NAV
 --------------------------- */
-let currentView = "setup";
 function go(id){
   document.querySelectorAll(".view").forEach(v => v.style.display="none");
   document.getElementById(id).style.display="block";
-  currentView = id;
 
   document.querySelectorAll(".navBtn").forEach(b => b.classList.remove("active"));
   const navBtn = document.getElementById("nav-"+id);
   if(navBtn) navBtn.classList.add("active");
 
-  // refresh on enter
   if(id==="officer") renderOfficer();
   if(id==="checkin") renderCheckin();
   if(id==="briefing") renderBriefing();
   if(id==="map") { renderMapGate(); renderMap(); }
+  if(id==="pscs") { ensurePrisonData(); renderPSCS(); }
   if(id==="log") renderLog();
+}
+
+/* ---------------------------
+  LOG
+--------------------------- */
+function loadLog(){ return window.__LOG || []; }
+function saveLog(arr){ window.__LOG = arr; }
+function log(msg){
+  const arr = loadLog();
+  const time = document.getElementById("clock").innerText || "--:--";
+  arr.unshift(`[${time}] ${msg}`);
+  saveLog(arr);
+  renderLog();
+}
+function renderLog(){
+  const box = document.getElementById("logBox");
+  const arr = loadLog();
+  box.innerHTML = arr.length ? arr.map(x => "• "+x).join("<br>") : "<span class='muted'>No entries yet.</span>";
 }
 
 /* ---------------------------
@@ -498,6 +571,18 @@ function go(id){
 --------------------------- */
 function loadOfficer(){ return JSON.parse(localStorage.getItem(K_OFFICER) || "null"); }
 function saveOfficerObj(o){ localStorage.setItem(K_OFFICER, JSON.stringify(o)); }
+
+function fillNationSelect(selectId, selected){
+  const sel = document.getElementById(selectId);
+  sel.innerHTML="";
+  EUROPE.forEach(([name,flag])=>{
+    const opt = document.createElement("option");
+    opt.value=name;
+    opt.textContent=`${flag} ${name}`;
+    sel.appendChild(opt);
+  });
+  if(selected) sel.value = selected;
+}
 
 function saveOfficer(){
   const first = document.getElementById("firstName").value.trim();
@@ -515,18 +600,16 @@ function saveOfficer(){
     alert("If prisoners should address you by alias, please set an alias."); return;
   }
 
-  const officer = { first, last, alias, addressPref, gender, nation };
-  saveOfficerObj(officer);
+  saveOfficerObj({ first, last, alias, addressPref, gender, nation });
   bootstrap();
 }
 
 function renderOfficer(){
   const o = loadOfficer();
   const s = loadShift();
-
   if(!o){ go("setup"); return; }
 
-  const displayName = o.addressPref==="alias" ? o.alias : o.last;
+  const displayName = (o.addressPref==="alias" ? (o.alias || o.last) : o.last);
   document.getElementById("officerCard").innerHTML = `
     <div class="row">
       <div class="col">
@@ -546,7 +629,6 @@ function renderOfficer(){
     </div>
   `;
 
-  // fill edit form
   document.getElementById("editFirst").value = o.first || "";
   document.getElementById("editLast").value  = o.last || "";
   document.getElementById("editAlias").value = o.alias || "";
@@ -559,7 +641,7 @@ function renderOfficer(){
     ? (canEdit
       ? "Możesz edytować dane oficera (1/1 dostępne na tej zmianie)."
       : "Edycja zużyta na tej zmianie. Następna edycja dopiero po rozpoczęciu nowej zmiany.")
-    : "Aby edytować na zasadzie 1×/zmiana, rozpocznij najpierw shift w zakładce Check-in.";
+    : "Aby edytować na zasadzie 1×/zmiana, rozpocznij najpierw shift w Check-in.";
 }
 
 function saveOfficerEdit(){
@@ -595,12 +677,12 @@ function saveOfficerEdit(){
   SHIFT / PRISON STRUCTURE
 --------------------------- */
 const HB_INFO = [
-  { hb:1, name:"VP Wing",        channel:"Alpha"  },
-  { hb:2, name:"Induction Wing", channel:"Bravo"  },
-  { hb:3, name:"Main Prisoners", channel:"Charlie" },
-  { hb:4, name:"Medication/Detox", channel:"Delta" },
-  { hb:5, name:"Enhanced",      channel:"Echo"    },
-  { hb:6, name:"Main Prisoners", channel:"Foxtrot" },
+  { hb:1, name:"VP Wing",            channel:"Alpha"  },
+  { hb:2, name:"Induction Wing",    channel:"Bravo"  },
+  { hb:3, name:"Main Prisoners",    channel:"Charlie" },
+  { hb:4, name:"Medication & Detox", channel:"Delta"  },
+  { hb:5, name:"Enhanced",          channel:"Echo"    },
+  { hb:6, name:"Main Prisoners",    channel:"Foxtrot" },
 ];
 const WINGS = ["A","B","C"];
 const KEY_COLORS = ["Blue","Yellow","Red","Green","Grey"];
@@ -618,11 +700,9 @@ function startNewShift(){
   const officer = loadOfficer();
   if(!officer){ go("setup"); return; }
 
-  // random assignment
   const hbRow = choice(HB_INFO);
-  const wing = choice(WINGS);
+  const wingAssigned = choice(WINGS);
 
-  // radio number 2..30 excluding 1 and 10
   let radioNum = randInt(2,30);
   while(radioNum===10) radioNum = randInt(2,30);
 
@@ -631,42 +711,39 @@ function startNewShift(){
     hb: hbRow.hb,
     hbName: hbRow.name,
     channel: hbRow.channel,
-    wingAssigned: wing,
-    // items to pick up:
-    radio: null,  // {channel, num}
-    keys: null,    // {color, num}
+    wingAssigned,
+    radio: null,
+    keys: null,
     bwv: false,
     checkinComplete: false,
     officerEditedThisShift: false,
-    // briefing info
-    unlockRoll: randInt(30, 65),
-    highRiskCount: randInt(0, 3),
-    acctCount: randInt(0, 2),
+    staff: generateStaffDetail(hbRow.hb, wingAssigned),
+    radioOffer: { channel: hbRow.channel, num: radioNum },
     intel: choice([
       "Quiet wing expected, but keep an eye on debt tension.",
       "Intel suggests possible contraband movement.",
       "Recent complaints about medication delays.",
-      "Previous shift flagged manipulative cell bell use."
-    ]),
-    // staff detail (random names)
-    staff: generateStaffDetail(hbRow.hb, wing),
-    // reserved radio for this shift (player must pick it up)
-    radioOffer: { channel: hbRow.channel, num: radioNum }
+      "Previous shift flagged manipulative emergency bell use."
+    ])
   };
   saveShift(shift);
 
-  // reset / create map state for this shift
+  // Doors state for this shift (HB + all wings)
   const map = createFreshMapState(shift.hb);
   saveMapState(map);
 
-  log(`New shift assigned: HB${shift.hb} ${shift.hbName}, Wing ${shift.wingAssigned}.`);
-  renderCheckin();
+  // Ensure prison database + occupancy exists, and ensure occupancy has all cells for all HB
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+
+  log(`New shift: HB${shift.hb} ${shift.hbName}, Wing ${shift.wingAssigned}.`);
+  loadShiftAndRender();
   go("checkin");
 }
 
 function generateStaffDetail(hb, wing){
   const surnames = ["Smith","Johnson","Brown","Taylor","Wilson","Davies","Evans","Thomas","Roberts","Walker","Wright","Thompson"];
-  const roles = ["PO","PO","PO","PO","SO","CM"]; // SO and CM included
+  const roles = ["PO","PO","PO","PO","SO","CM"];
   const list = [];
   for(let i=0;i<6;i++){
     const role = roles[i] || "PO";
@@ -680,7 +757,6 @@ function generateStaffDetail(hb, wing){
 }
 
 function createFreshMapState(hb){
-  // map state includes open/closed for each cell for wings A/B/C, floors 1..3, cells 1..12
   const state = { hb, cells:{} };
   for(const w of WINGS){
     for(let f=1; f<=3; f++){
@@ -694,8 +770,26 @@ function createFreshMapState(hb){
 }
 
 /* ---------------------------
-  CHECK-IN
+  CHECK-IN UI
 --------------------------- */
+function loadShiftAndRender(){
+  const s = loadShift();
+  const o = loadOfficer();
+  if(o){
+    const displayName = (o.addressPref==="alias" ? (o.alias || o.last) : o.last);
+    document.getElementById("officerTag").innerText = `${pickFlag(o.nation)} Officer ${displayName}`;
+  } else {
+    document.getElementById("officerTag").innerText = "No officer profile";
+  }
+  if(s){
+    document.getElementById("shiftTag").innerText =
+      `Assigned: HB${s.hb} ${s.hbName} • Wing ${s.wingAssigned} • Channel ${s.channel}`;
+  } else {
+    document.getElementById("shiftTag").innerText = "";
+  }
+  renderCheckin();
+}
+
 function renderCheckin(){
   const s = loadShift();
   const o = loadOfficer();
@@ -708,18 +802,13 @@ function renderCheckin(){
     document.getElementById("radioBox").innerHTML = `—`;
     document.getElementById("keysBox").innerHTML = `—`;
     document.getElementById("bwvBox").innerHTML = `—`;
-    document.getElementById("shiftTag").innerText = "";
     return;
   }
-
-  document.getElementById("shiftTag").innerText =
-    `Assigned: HB${s.hb} ${s.hbName} • Wing ${s.wingAssigned} • Channel ${s.channel}`;
 
   document.getElementById("checkinState").innerHTML = s.checkinComplete
     ? `<div class="notice"><strong>Check-in complete.</strong> You can proceed or review equipment.</div>`
     : `<div class="notice"><strong>Check-in pending.</strong> Pick radio + keys, decide BWV, then proceed.</div>`;
 
-  // staff detail table
   let html = `<table class="table"><thead><tr><th>Name</th><th>Role</th><th>Assignment</th></tr></thead><tbody>`;
   s.staff.forEach(r=>{
     html += `<tr><td>${r.name}</td><td>${r.role}</td><td>${r.assigned}</td></tr>`;
@@ -727,19 +816,16 @@ function renderCheckin(){
   html += `</tbody></table>`;
   document.getElementById("staffDetail").innerHTML = html;
 
-  // radio box
   const r = s.radio;
   document.getElementById("radioBox").innerHTML = r
     ? `You have <strong>${r.channel}</strong> radio • Number <strong>${r.num}</strong> (1 reserved SO, 10 reserved CM)`
     : `Not picked up yet. Suggested: <strong>${s.radioOffer.channel}</strong> • Number <strong>${s.radioOffer.num}</strong>`;
 
-  // keys box
   const k = s.keys;
   document.getElementById("keysBox").innerHTML = k
     ? `Keys: <strong>${k.color}</strong> • Key No. <strong>${k.num}</strong>`
     : `Not picked up yet. You must carry keys to operate doors/cells.`;
 
-  // BWV box
   document.getElementById("bwvBox").innerHTML = s.bwv
     ? `BWV: <strong>ON PERSON</strong> (may protect you, may limit discretion)`
     : `BWV: <strong>NOT TAKEN</strong> (management prefers you take it, sometimes look away)`;
@@ -787,7 +873,7 @@ function completeCheckin(){
 }
 
 /* ---------------------------
-  BRIEFING (more detailed)
+  BRIEFING (counts from PSCS occupancy)
 --------------------------- */
 function renderBriefing(){
   const s = loadShift();
@@ -805,8 +891,35 @@ function renderBriefing(){
     return;
   }
 
-  const displayName = o.addressPref==="alias" ? (o.alias || o.last) : o.last;
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+
+  const displayName = (o.addressPref==="alias" ? (o.alias || o.last) : o.last);
   const flag = pickFlag(o.nation);
+
+  const wingCells = getCellsForWing(s.hb, s.wingAssigned);
+  const occ = loadOccupancy();
+  const prisoners = loadPrisoners();
+
+  let unlockRoll = 0;
+  let highRisk = 0;
+  let acct = 0;
+
+  for(const cellId of wingCells){
+    const ids = (occ[cellId] || []);
+    unlockRoll += ids.length;
+    for(const pid of ids){
+      const p = prisoners[pid];
+      if(!p) continue;
+      if(p.alerts.includes("HIGH RISK")) highRisk++;
+      if(p.alerts.includes("ACCT")) acct++;
+    }
+  }
+
+  s.unlockRoll = unlockRoll;
+  s.highRiskCount = highRisk;
+  s.acctCount = acct;
+  saveShift(s);
 
   document.getElementById("briefingBox").innerHTML = `
     <div class="row">
@@ -821,9 +934,9 @@ function renderBriefing(){
       </div>
       <div class="col">
         <div class="notice">
-          <strong>Unlock roll count:</strong> ${s.unlockRoll} prisoners under your care<br/>
-          <strong>High Risk:</strong> ${s.highRiskCount}<br/>
-          <strong>ACCT open:</strong> ${s.acctCount}<br/>
+          <strong>Unlock roll count:</strong> ${unlockRoll} prisoners under your care<br/>
+          <strong>High Risk:</strong> ${highRisk}<br/>
+          <strong>ACCT open:</strong> ${acct}<br/>
           <strong>Intel:</strong> ${s.intel}
         </div>
       </div>
@@ -841,12 +954,12 @@ function renderBriefing(){
     <div class="divider"></div>
 
     <button class="btn ok" onclick="go('map')">Go to Wing Map</button>
-    <button class="btn ghost" onclick="go('schedule')">View Schedule</button>
+    <button class="btn ghost" onclick="go('pscs')">Open PSCS</button>
   `;
 }
 
 /* ---------------------------
-  MAP
+  MAP (doors + occupants)
 --------------------------- */
 function renderMapGate(){
   const s = loadShift();
@@ -859,7 +972,7 @@ function renderMapGate(){
     gate.innerHTML = `Check-in not complete. Finish <strong>Check-in</strong> to use wing map (keys & radio required).`;
     return;
   }
-  gate.innerHTML = `You have keys and access. Click cells to open/close. Format: <strong>HB-WingFloor-Cell</strong> (e.g. <strong>${s.hb}-${s.wingAssigned}1-10</strong>).`;
+  gate.innerHTML = `Click cells to open/close doors. PSCS shows occupants. Format: <strong>HB-WingFloor-Cell</strong> (e.g. <strong>${s.hb}-${s.wingAssigned}1-10</strong>).`;
 }
 
 function populateWingSelect(){
@@ -879,6 +992,11 @@ function renderMap(){
   const s = loadShift();
   const map = loadMapState();
   if(!s || !map) return;
+
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+  const occ = loadOccupancy();
+  const prisoners = loadPrisoners();
 
   populateWingSelect();
   document.getElementById("mapHB").innerText = `HB${s.hb} ${s.hbName}`;
@@ -904,14 +1022,13 @@ function renderMap(){
     const rightRow = document.createElement("div");
     rightRow.className = "cellsRow";
 
-    // 1..6 left, 7..12 right
     for(let c=1; c<=6; c++){
       const cellId = `${hb}-${wing}${floor}-${String(c).padStart(2,"0")}`;
-      leftRow.appendChild(makeCellButton(cellId, map));
+      leftRow.appendChild(makeCellButton(cellId, map, occ, prisoners));
     }
     for(let c=7; c<=12; c++){
       const cellId = `${hb}-${wing}${floor}-${String(c).padStart(2,"0")}`;
-      rightRow.appendChild(makeCellButton(cellId, map));
+      rightRow.appendChild(makeCellButton(cellId, map, occ, prisoners));
     }
 
     const leftLabel = document.createElement("div");
@@ -930,38 +1047,59 @@ function renderMap(){
   }
 }
 
-function makeCellButton(cellId, map){
+function makeCellButton(cellId, map, occ, prisoners){
   const btn = document.createElement("button");
-  btn.className = "cellBtn " + (map.cells[cellId]?.isOpen ? "open" : "locked");
+  const open = map.cells[cellId]?.isOpen;
+  btn.className = "cellBtn " + (open ? "open" : "locked");
   btn.textContent = cellId.split("-").slice(1).join("-"); // WingFloor-Cell
-  btn.title = cellId;
-  btn.onclick = () => openCell(cellId);
+
+  const ids = occ[cellId] || [];
+  let tooltip = `${cellId}\nDoor: ${open ? "OPEN" : "CLOSED"}\nOccupants: ${ids.length}`;
+  if(ids.length){
+    tooltip += "\n" + ids.map(pid => {
+      const p = prisoners[pid];
+      return p ? `${p.lastName} (${p.prisonNumber})` : pid;
+    }).join("\n");
+  }
+  btn.title = tooltip;
+
+  btn.onclick = () => toggleCellDoor(cellId);
   return btn;
 }
 
-function openCell(cellId){
+function toggleCellDoor(cellId){
   const s = loadShift();
   const map = loadMapState();
   if(!s || !map) return;
 
-  // toggle
   map.cells[cellId].isOpen = !map.cells[cellId].isOpen;
   saveMapState(map);
 
   const state = map.cells[cellId].isOpen ? "OPENED" : "CLOSED";
-  log(`Cell ${cellId} ${state}.`);
+  log(`Cell door ${cellId} ${state}.`);
 
-  // detail
+  // detail with occupants
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+  const occ = loadOccupancy();
+  const prisoners = loadPrisoners();
+
+  const ids = occ[cellId] || [];
+  const occupants = ids.map(pid => prisoners[pid]).filter(Boolean);
+
+  const occHtml = occupants.length
+    ? `<ul class="list">${occupants.map(p => `<li><strong>${p.lastName}</strong>, ${p.firstName} • ${p.prisonNumber} • <span class="muted">${p.alerts.join(", ") || "No alerts"}</span></li>`).join("")}</ul>`
+    : `<div class="muted">No occupants recorded.</div>`;
+
   document.getElementById("cellDetail").innerHTML = `
     <div><strong>Cell:</strong> ${cellId}</div>
-    <div class="muted">Actions (basic):</div>
-    <div class="row" style="margin-top:8px">
+    <div class="muted">Occupants (from PSCS):</div>
+    ${occHtml}
+    <div class="divider"></div>
+    <div class="row">
       <button class="btn" onclick="log('Cell check logged for ${cellId}')">Log cell check</button>
       <button class="btn warn" onclick="log('Knock & speak at ${cellId}')">Knock & speak</button>
       <button class="btn ghost" onclick="log('No action taken at ${cellId}')">No action</button>
-    </div>
-    <div class="notice" style="margin-top:10px">
-      W przyszłości dodamy: prisoners in cell, occupancy (max 2), high-risk solo, dynamiczne statusy.
     </div>
   `;
 
@@ -974,8 +1112,18 @@ function lockAll(){
   if(!s || !map) return;
   Object.keys(map.cells).forEach(k => map.cells[k].isOpen=false);
   saveMapState(map);
-  log("All cells locked.");
+  log("All cell doors locked.");
   renderMap();
+}
+
+function getCellsForWing(hb, wing){
+  const cells = [];
+  for(let f=1; f<=3; f++){
+    for(let c=1; c<=12; c++){
+      cells.push(`${hb}-${wing}${f}-${String(c).padStart(2,"0")}`);
+    }
+  }
+  return cells;
 }
 
 /* ---------------------------
@@ -983,9 +1131,7 @@ function lockAll(){
 --------------------------- */
 function spawnManualBell(){
   const s = loadShift();
-  if(!s || !s.checkinComplete){
-    alert("Finish check-in first."); return;
-  }
+  if(!s || !s.checkinComplete){ alert("Finish check-in first."); return; }
   const loc = `${s.hb}-${s.wingAssigned}${randInt(1,3)}-${String(randInt(1,12)).padStart(2,"0")}`;
   const area = document.getElementById("eventsArea");
   const div = document.createElement("div");
@@ -1009,94 +1155,443 @@ function resolveBell(btn, result, loc){
 }
 
 /* ---------------------------
-  LOG
+  PSCS – PRISONERS & OCCUPANCY
 --------------------------- */
-function loadLog(){
-  // keep log in memory only for now, but we can persist later
-  return window.__LOG || [];
+function loadPrisoners(){
+  return JSON.parse(localStorage.getItem(K_PRISONERS) || "{}");
 }
-function saveLog(arr){
-  window.__LOG = arr;
+function savePrisoners(obj){
+  localStorage.setItem(K_PRISONERS, JSON.stringify(obj));
 }
-function log(msg){
-  const arr = loadLog();
-  const time = document.getElementById("clock").innerText || "--:--";
-  arr.unshift(`[${time}] ${msg}`);
-  saveLog(arr);
-  renderLog();
+function loadOccupancy(){
+  return JSON.parse(localStorage.getItem(K_OCC) || "{}");
 }
-function renderLog(){
-  const box = document.getElementById("logBox");
-  const arr = loadLog();
-  box.innerHTML = arr.length ? arr.map(x => "• "+x).join("<br>") : "<span class='muted'>No entries yet.</span>";
+function saveOccupancy(obj){
+  localStorage.setItem(K_OCC, JSON.stringify(obj));
+}
+function loadUsedPrisonNumbers(){
+  return JSON.parse(localStorage.getItem(K_USEDPN) || "[]");
+}
+function saveUsedPrisonNumbers(arr){
+  localStorage.setItem(K_USEDPN, JSON.stringify(arr));
+}
+
+const PRISONER_FIRST = ["James","John","Robert","Michael","David","Daniel","Mark","Paul","Kevin","Ryan","Kyle","Adam","Liam","Noah","Jack","Oliver","Harry","George","Thomas","Charlie"];
+const PRISONER_LAST  = ["Jones","Williams","Taylor","Brown","Davies","Evans","Thomas","Roberts","Walker","Wright","Thompson","White","Hall","Green","Wood","Cooper","King","Scott","Turner","Parker"];
+
+const RACES = ["White British","White Other","Black Caribbean","Black African","South Asian","Mixed","Middle Eastern","East Asian","Other"];
+const RELIGIONS = ["Christian","Muslim","Hindu","Sikh","Buddhist","Jewish","None","Other"];
+
+const NON_UK_FREQUENT = [
+  "India","Pakistan","Bangladesh","Ireland","Albania","Romania","Poland"
+];
+const NON_UK_OTHER = [
+  "France","Germany","Spain","Italy","Portugal","Netherlands","Belgium","Sweden","Norway","Denmark","Finland",
+  "Lithuania","Latvia","Estonia","Ukraine","Turkey","Greece","Czechia","Slovakia","Hungary","Bulgaria","Croatia","Serbia"
+];
+
+function ensurePrisonData(){
+  // If there is no prisoner db yet, create a baseline population
+  const prisoners = loadPrisoners();
+  const occ = loadOccupancy();
+  const hasAny = Object.keys(prisoners).length > 0;
+  const hasOcc = Object.keys(occ).length > 0;
+  if(!hasAny || !hasOcc){
+    // create occupancy skeleton for all 6 HB, all wings, all floors/cells
+    const occNew = {};
+    for(const hbRow of HB_INFO){
+      for(const w of WINGS){
+        for(let f=1; f<=3; f++){
+          for(let c=1; c<=12; c++){
+            const cellId = `${hbRow.hb}-${w}${f}-${String(c).padStart(2,"0")}`;
+            occNew[cellId] = [];
+          }
+        }
+      }
+    }
+    saveOccupancy(occNew);
+    if(!hasAny) savePrisoners({});
+  }
+}
+
+function generatePrisonNumber(){
+  // H + 4 digits + 2 letters
+  const used = new Set(loadUsedPrisonNumbers());
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // remove I/O
+  for(let tries=0; tries<2000; tries++){
+    const digits = String(randInt(0,9999)).padStart(4,"0");
+    const a = letters[randInt(0, letters.length-1)];
+    const b = letters[randInt(0, letters.length-1)];
+    const pn = `H${digits}${a}${b}`;
+    if(!used.has(pn)){
+      used.add(pn);
+      saveUsedPrisonNumbers(Array.from(used));
+      return pn;
+    }
+  }
+  // fallback
+  return `H${Date.now().toString().slice(-4)}ZZ`;
+}
+
+function pickNationality(){
+  // 75% British with slight drift
+  const base = 0.72 + Math.random()*0.08; // 72–80%
+  if(Math.random() < base) return "British";
+  // foreigners: heavy on frequent list, small tail of others
+  const r = Math.random();
+  if(r < 0.75) return choice(NON_UK_FREQUENT);          // majority of non-UK from these
+  if(r < 0.99) return choice(NON_UK_OTHER);            // more variety
+  // ~1% "other" (still realistic but uncommon)
+  const extra = ["Nepal","Sri Lanka","Nigeria","Jamaica","Brazil","USA","China","Japan","Australia","Russia","Egypt","Morocco"];
+  return choice(extra);
+}
+
+function randomDOB(){
+  // age 18–65
+  const year = randInt(1961, 2008);
+  const month = randInt(1,12);
+  const day = randInt(1,28);
+  return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+}
+
+function avatarDataURI(initials, seed){
+  // simple SVG avatar with initials
+  const colors = ["#1f2937","#0b3b5a","#3b0b2e","#0b3b1a","#2b1b0b","#111827","#0a2a3f"];
+  const bg = colors[seed % colors.length];
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
+    <rect width="128" height="128" rx="18" ry="18" fill="${bg}"/>
+    <circle cx="64" cy="56" r="26" fill="#0f172a"/>
+    <rect x="22" y="86" width="84" height="28" rx="14" fill="#0f172a"/>
+    <text x="64" y="70" text-anchor="middle" font-size="28" font-family="Arial" fill="#e5e7eb" font-weight="700">${initials}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg.trim());
+}
+
+function buildAlertsForPlacement(hb){
+  const alerts = [];
+  // wing type implied
+  if(hb===1) alerts.push("VP");
+  if(hb===2) alerts.push("INDUCTION");
+  if(hb===4) alerts.push("MEDICATION");
+  if(hb===5) alerts.push("ENHANCED");
+
+  // random extras
+  if(Math.random()<0.08) alerts.push("ACCT");
+  if(Math.random()<0.07) alerts.push("VIOLENCE MARKER");
+  if(Math.random()<0.06) alerts.push("TACTICAL");
+  if(Math.random()<0.05) alerts.push("SELF-HARM HISTORY");
+
+  // High risk rare
+  if(Math.random()<0.045) alerts.push("HIGH RISK");
+
+  return Array.from(new Set(alerts));
+}
+
+function createPrisoner(hb, location){
+  const firstName = choice(PRISONER_FIRST);
+  const lastName = choice(PRISONER_LAST);
+  const prisonNumber = generatePrisonNumber();
+  const dob = randomDOB();
+  const nationality = pickNationality();
+  const race = choice(RACES);
+  const religion = choice(RELIGIONS);
+  const alerts = buildAlertsForPlacement(hb);
+  const initials = (firstName[0] + lastName[0]).toUpperCase();
+  const seed = (prisonNumber.charCodeAt(1) + prisonNumber.charCodeAt(2) + prisonNumber.charCodeAt(3)) % 100;
+  const photo = avatarDataURI(initials, seed);
+
+  return {
+    id: prisonNumber,              // use prison number as primary key
+    prisonNumber,
+    firstName,
+    lastName,
+    dob,
+    nationality,
+    race,
+    religion,
+    location,
+    alerts,
+    photo
+  };
+}
+
+function ensureOccupancyAndFill(){
+  // Fill prison to a reasonable occupancy, respecting high-risk = single
+  const prisoners = loadPrisoners();
+  const occ = loadOccupancy();
+
+  // If occupancy exists but is empty (all cells empty), fill now
+  const anyOccupied = Object.values(occ).some(arr => (arr||[]).length>0);
+  if(anyOccupied) return;
+
+  // target occupancy ~55–75%
+  const occupancyRate = 0.55 + Math.random()*0.20;
+  const allCells = Object.keys(occ);
+
+  // shuffle cells
+  const cells = allCells.slice().sort(()=>Math.random()-0.5);
+
+  for(const cellId of cells){
+    if(Math.random() > occupancyRate) continue;
+
+    const hb = parseInt(cellId.split("-")[0],10);
+
+    // decide occupants count
+    // default: 1 or 2
+    let count = (Math.random() < 0.55) ? 1 : 2;
+
+    // create first prisoner
+    const p1 = createPrisoner(hb, cellId);
+    prisoners[p1.id] = p1;
+    occ[cellId] = [p1.id];
+
+    // if high risk, keep single
+    const p1High = p1.alerts.includes("HIGH RISK");
+    if(count===2 && !p1High){
+      // second prisoner with a chance to be high risk – if high risk, avoid placing with someone
+      const p2 = createPrisoner(hb, cellId);
+      if(p2.alerts.includes("HIGH RISK")){
+        // force p2 to be non-high-risk for shared cell
+        p2.alerts = p2.alerts.filter(a => a!=="HIGH RISK");
+      }
+      prisoners[p2.id] = p2;
+      occ[cellId].push(p2.id);
+    }
+  }
+
+  savePrisoners(prisoners);
+  saveOccupancy(occ);
 }
 
 /* ---------------------------
-  NATION SELECTS
+  PSCS UI
 --------------------------- */
-function fillNationSelect(selectId, selected){
-  const sel = document.getElementById(selectId);
-  sel.innerHTML="";
-  EUROPE.forEach(([name,flag])=>{
-    const opt = document.createElement("option");
-    opt.value=name;
-    opt.textContent=`${flag} ${name}`;
-    sel.appendChild(opt);
+let __selectedPrisonerId = null;
+let __profileTab = "profile";
+
+function renderPSCS(){
+  const s = loadShift();
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+
+  const prisoners = loadPrisoners();
+  const occ = loadOccupancy();
+
+  // counts
+  const total = Object.keys(prisoners).length;
+  document.getElementById("pscsTotal").innerText = String(total);
+  document.getElementById("pscsHB").innerText = s ? String(s.hb) : "-";
+
+  renderPSCSList();
+  if(__selectedPrisonerId && prisoners[__selectedPrisonerId]){
+    renderPSCSProfile(__selectedPrisonerId);
+  } else {
+    document.getElementById("pscsProfile").innerHTML = "Select a prisoner from the list.";
+  }
+}
+
+function renderPSCSList(){
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+
+  const prisoners = loadPrisoners();
+  const s = loadShift();
+  const query = (document.getElementById("pscsSearch")?.value || "").trim().toLowerCase();
+
+  // list order: show assigned HB first, then rest
+  const ids = Object.keys(prisoners);
+
+  ids.sort((a,b)=>{
+    const pa = prisoners[a], pb = prisoners[b];
+    const ha = pa.location.startsWith(String(s?.hb || "")) ? 0 : 1;
+    const hb = pb.location.startsWith(String(s?.hb || "")) ? 0 : 1;
+    if(ha!==hb) return ha-hb;
+    // surname sort
+    return (pa.lastName+pa.firstName).localeCompare(pb.lastName+pb.firstName);
   });
-  if(selected) sel.value = selected;
+
+  const listDiv = document.getElementById("pscsList");
+  listDiv.innerHTML = "";
+
+  let shown = 0;
+  for(const id of ids){
+    const p = prisoners[id];
+    const hay = `${p.lastName} ${p.firstName} ${p.prisonNumber} ${p.location} ${p.nationality}`.toLowerCase();
+    if(query && !hay.includes(query)) continue;
+
+    const isSelected = (__selectedPrisonerId===id);
+    const row = document.createElement("div");
+    row.className = "prisonerRow";
+    row.style.borderColor = isSelected ? "var(--accent)" : "var(--border)";
+    row.innerHTML = `
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="width:34px;height:34px;border-radius:12px;border:1px solid var(--border);overflow:hidden">
+          <img src="${p.photo}" style="width:34px;height:34px;display:block" alt="avatar"/>
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:900">${p.lastName}, ${p.firstName}</div>
+          <div class="muted small">${p.prisonNumber} • ${p.location}</div>
+        </div>
+      </div>
+    `;
+    row.onclick = ()=>renderPSCSProfile(id);
+    listDiv.appendChild(row);
+
+    shown++;
+    if(shown>=120) break; // keep UI snappy; search to find others
+  }
+
+  if(shown===0){
+    listDiv.innerHTML = `<div class="muted">No results.</div>`;
+  } else if(shown>=120){
+    const note = document.createElement("div");
+    note.className="muted small";
+    note.style.marginTop="8px";
+    note.textContent="Showing first 120 results. Use search to narrow.";
+    listDiv.appendChild(note);
+  }
+}
+
+function renderPSCSProfile(id){
+  ensurePrisonData();
+  ensureOccupancyAndFill();
+  const prisoners = loadPrisoners();
+  const p = prisoners[id];
+  if(!p) return;
+
+  __selectedPrisonerId = id;
+  __profileTab = "profile";
+
+  const profileDiv = document.getElementById("pscsProfile");
+  profileDiv.innerHTML = buildPrisonerProfileHTML(p);
+  renderPSCSList();
+}
+
+function buildPrisonerProfileHTML(p){
+  const alerts = p.alerts.length ? p.alerts : ["None"];
+  const tabBtns = `
+    <div class="miniTabs">
+      <button id="tab-profile" class="${__profileTab==='profile'?'active':''}" onclick="setProfileTab('profile')">Profile</button>
+      <button id="tab-alerts" class="${__profileTab==='alerts'?'active':''}" onclick="setProfileTab('alerts')">Alerts</button>
+      <button id="tab-actions" class="${__profileTab==='actions'?'active':''}" onclick="setProfileTab('actions')">Actions</button>
+    </div>
+  `;
+
+  return `
+    <div class="row">
+      <div class="col" style="max-width:320px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="avatar"><img src="${p.photo}" alt="photo" style="width:84px;height:84px;display:block"/></div>
+          <div>
+            <div style="font-size:18px;font-weight:900">${p.firstName} ${p.lastName}</div>
+            <div class="muted">${p.prisonNumber}</div>
+            <div class="pill" style="margin-top:8px"><strong>Location</strong> ${p.location}</div>
+          </div>
+        </div>
+        ${tabBtns}
+      </div>
+
+      <div class="col">
+        <div id="profileTabContent">
+          ${renderProfileTabContent(p)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setProfileTab(tab){
+  __profileTab = tab;
+  const prisoners = loadPrisoners();
+  const p = prisoners[__selectedPrisonerId];
+  if(!p) return;
+  document.getElementById("pscsProfile").innerHTML = buildPrisonerProfileHTML(p);
+}
+
+function renderProfileTabContent(p){
+  if(__profileTab==="alerts"){
+    return `
+      <h3>⚠️ Alerts</h3>
+      <ul class="list">
+        ${(p.alerts.length ? p.alerts : ["None"]).map(a=>`<li><strong>${a}</strong></li>`).join("")}
+      </ul>
+      <div class="notice">
+        Później dodamy: alert history, dates, author, mandatory actions.
+      </div>
+    `;
+  }
+
+  if(__profileTab==="actions"){
+    return `
+      <h3>🧩 Actions (placeholder)</h3>
+      <div class="notice">
+        Tu później dojdzie: move cell, log entry, IEP decision, referrals, ACCT actions, etc.
+      </div>
+      <button class="btn ghost" onclick="log('PSCS: opened actions for ${p.prisonNumber}')">Log: opened actions</button>
+    `;
+  }
+
+  // default profile
+  return `
+    <h3>🧾 Profile</h3>
+    <div class="kv">
+      <div>Name</div><div><strong>${p.firstName} ${p.lastName}</strong></div>
+      <div>Prison No.</div><div><strong>${p.prisonNumber}</strong></div>
+      <div>DOB</div><div>${p.dob}</div>
+      <div>Nationality</div><div>${p.nationality}</div>
+      <div>Race</div><div>${p.race}</div>
+      <div>Religion</div><div>${p.religion}</div>
+      <div>Location</div><div>${p.location}</div>
+    </div>
+    <div class="divider"></div>
+    <div class="notice">
+      Alerts (quick): <strong>${(p.alerts.length?p.alerts.join(", "):"None")}</strong>
+    </div>
+  `;
 }
 
 /* ---------------------------
-  BOOTSTRAP
+  RESET
 --------------------------- */
 function resetAll(){
   localStorage.removeItem(K_OFFICER);
   localStorage.removeItem(K_SHIFT);
   localStorage.removeItem(K_MAP);
+  localStorage.removeItem(K_PRISONERS);
+  localStorage.removeItem(K_OCC);
+  localStorage.removeItem(K_USEDPN);
   window.__LOG = [];
+  __selectedPrisonerId = null;
+  __profileTab = "profile";
   bootstrap();
 }
 
-function loadShift(){
-  return JSON.parse(localStorage.getItem(K_SHIFT) || "null");
-}
-
+/* ---------------------------
+  BOOTSTRAP
+--------------------------- */
 function bootstrap(){
-  // init nation select in setup
   fillNationSelect("nation", "United Kingdom");
-  // init edit nation select will be filled in renderOfficer()
 
-  // officer tag
   const o = loadOfficer();
-  const tag = document.getElementById("officerTag");
-  if(o){
-    const displayName = o.addressPref==="alias" ? (o.alias || o.last) : o.last;
-    tag.innerText = `${pickFlag(o.nation)} Officer ${displayName}`;
-    document.getElementById("nav-setup").style.display="none";
-  }else{
-    tag.innerText = "No officer profile";
-    document.getElementById("nav-setup").style.display="block";
-  }
-
-  // start clock
   document.getElementById("clock").innerText =
     String(gameHour).padStart(2,"0")+":"+String(gameMinute).padStart(2,"0");
   if(!window.__CLOCK_STARTED){
     window.__CLOCK_STARTED = true;
-    setInterval(tickClock, 30000); // 1 game minute per 30s
+    setInterval(tickClock, 30000);
   }
 
-  // decide initial view
   if(!o){
+    document.getElementById("nav-setup").style.display="block";
+    document.getElementById("officerTag").innerText = "No officer profile";
+    document.getElementById("shiftTag").innerText = "";
     go("setup");
-  }else{
-    // ensure checkin is visible for start-of-shift flow
+  } else {
+    document.getElementById("nav-setup").style.display="none";
+    loadShiftAndRender();
     go("checkin");
-    renderOfficer(); // keep officer tab ready
   }
 
-  // refresh shift tag
-  renderCheckin();
   renderLog();
 }
 
