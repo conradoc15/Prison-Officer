@@ -6,49 +6,66 @@
 
 <style>
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
 }
 header {
-    background: #020617;
-    padding: 10px;
-    text-align: center;
+  background: #020617;
+  padding: 10px;
+  text-align: center;
 }
 .clock {
-    color: #fbbf24;
-    font-size: 14px;
+  color: #fbbf24;
+  font-size: 14px;
 }
-.container {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 15px;
-    padding: 15px;
+nav {
+  background: #020617;
+  padding: 8px;
+  text-align: center;
 }
-.panel {
-    background: #020617;
-    border-radius: 8px;
-    padding: 15px;
+nav button {
+  margin: 3px;
 }
 button {
-    background: #2563eb;
-    border: none;
-    color: white;
-    padding: 6px 10px;
-    margin: 4px 0;
-    border-radius: 5px;
-    cursor: pointer;
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 button.warn { background: #ca8a04; }
 button.bad { background: #b91c1c; }
-.cellbell {
-    border: 1px solid #334155;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 10px;
+
+.tab {
+  display: none;
+  padding: 15px;
 }
-.log { font-size: 13px; line-height: 1.4; }
+.panel {
+  background: #020617;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+.cell {
+  border: 1px solid #334155;
+  padding: 6px;
+  margin: 4px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.cellbell {
+  border: 1px solid #334155;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.log {
+  font-size: 13px;
+  line-height: 1.4;
+}
 </style>
 </head>
 
@@ -59,112 +76,153 @@ button.bad { background: #b91c1c; }
 <div class="clock" id="clock">07:00</div>
 </header>
 
-<div class="container">
+<nav>
+  <button onclick="showTab('briefing')">Briefing</button>
+  <button onclick="showTab('shift')">Active Shift</button>
+  <button onclick="showTab('bells')">Cell Bells</button>
+  <button onclick="showTab('map')">Wing Map</button>
+  <button onclick="showTab('pscs')">PSCS</button>
+  <button onclick="showTab('log')">Shift Log</button>
+</nav>
 
-<div class="panel">
-<h3>📋 Team Briefing</h3>
-<p><b>Houseblock:</b> 1 – Main Prisoners</p>
-<p><b>Wing:</b> A</p>
-<p><b>Unlock roll:</b> 48 prisoners</p>
-<p><b>High Risk:</b> 2 prisoners</p>
-<p><b>ACCT:</b> 1 open</p>
-<p><b>Intel:</b> Increased tension after last night</p>
-</div>
+<!-- BRIEFING -->
+<section id="briefing" class="tab">
+  <div class="panel">
+    <h2>📋 Team Briefing</h2>
+    <p><b>Houseblock:</b> 1 – Main Prisoners</p>
+    <p><b>Wing:</b> A</p>
+    <p><b>Unlock Roll:</b> 48 prisoners</p>
+    <p><b>High Risk:</b> 2 prisoners</p>
+    <p><b>ACCT:</b> 1 open</p>
+    <p><b>Intel:</b> Tension after previous shift</p>
+  </div>
+</section>
 
-<div class="panel">
-<h3>🔔 Emergency Cell Bells</h3>
-<div id="bells"></div>
-</div>
+<!-- ACTIVE SHIFT -->
+<section id="shift" class="tab">
+  <div class="panel">
+    <h2>👮 Active Shift</h2>
+    <p>You are assigned to Wing A.</p>
+    <p>Keys issued. Radios operational.</p>
+  </div>
+</section>
 
-<div class="panel">
-<h3>🗺️ Wing Map</h3>
-<button onclick="openCell('1-A1-10')">Open cell 1-A1-10</button>
-<button onclick="openCell('1-A2-07')">Open cell 1-A2-07</button>
-</div>
+<!-- CELL BELLS -->
+<section id="bells" class="tab">
+  <div class="panel">
+    <h2>🔔 Emergency Cell Bells</h2>
+    <div id="bellsContainer"></div>
+  </div>
+</section>
 
-<div class="panel">
-<h3>📖 Shift Log</h3>
-<div id="log" class="log"></div>
-</div>
+<!-- MAP -->
+<section id="map" class="tab">
+  <div class="panel">
+    <h2>🗺️ Wing A – Map</h2>
 
-</div>
+    <h4>Parter</h4>
+    <div class="cell" onclick="openCell('1-A1-10')">Cell 1-A1-10</div>
+    <div class="cell" onclick="openCell('1-A1-11')">Cell 1-A1-11</div>
+
+    <h4>Pierwsze piętro</h4>
+    <div class="cell" onclick="openCell('1-A2-05')">Cell 1-A2-05</div>
+
+    <h4>Drugie piętro</h4>
+    <div class="cell" onclick="openCell('1-A3-01')">Cell 1-A3-01</div>
+  </div>
+</section>
+
+<!-- PSCS -->
+<section id="pscs" class="tab">
+  <div class="panel">
+    <h2>💻 PSCS – Prison Service Computer System</h2>
+    <p>Select a prisoner to view profile.</p>
+    <p>(System under development)</p>
+  </div>
+</section>
+
+<!-- LOG -->
+<section id="log" class="tab">
+  <div class="panel">
+    <h2>📖 Shift Log</h2>
+    <div id="logContainer" class="log"></div>
+  </div>
+</section>
 
 <script>
+/* TABS */
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.style.display = "none");
+  document.getElementById(id).style.display = "block";
+}
+showTab('briefing');
+
+/* CLOCK – 1h game = 30 min real */
 let hour = 7;
 let minute = 0;
-
 const clock = document.getElementById("clock");
-const bellsDiv = document.getElementById("bells");
-const logDiv = document.getElementById("log");
 
-function log(msg) {
-    logDiv.innerHTML = "• " + msg + "<br>" + logDiv.innerHTML;
-}
-
-function updateClock() {
-    minute++;
-    if (minute >= 60) {
-        minute = 0;
-        hour++;
-    }
-    clock.innerText =
-        (hour < 10 ? "0" : "") + hour + ":" +
-        (minute < 10 ? "0" : "") + minute;
-}
-
-// 1 minuta gry = 30 sekund realnych
-setInterval(updateClock, 30000);
-
-// CELL BELLS – bardzo rzadko
 setInterval(() => {
-    if (Math.random() < 0.15) {
-        createBell();
-    }
+  minute++;
+  if (minute >= 60) {
+    minute = 0;
+    hour++;
+  }
+  clock.innerText =
+    (hour < 10 ? "0" : "") + hour + ":" +
+    (minute < 10 ? "0" : "") + minute;
+}, 30000);
+
+/* LOG */
+const logContainer = document.getElementById("logContainer");
+function log(msg) {
+  logContainer.innerHTML = "• " + msg + "<br>" + logContainer.innerHTML;
+}
+
+/* CELL BELLS – RARE */
+const bellsContainer = document.getElementById("bellsContainer");
+
+setInterval(() => {
+  if (Math.random() < 0.12) createBell();
 }, 30000);
 
 function createBell() {
-    const cell = "1-A1-10";
-    const bell = document.createElement("div");
-    bell.className = "cellbell";
-    bell.innerHTML = `
-        <b>Emergency Cell Bell</b><br>
-        <i>Location:</i> ${cell}<br><br>
-        Prisoner requesting officer presence<br><br>
-        <button onclick="respond(this)">Respond</button>
-        <button class="warn" onclick="delay(this)">Delay</button>
-    `;
-    bellsDiv.appendChild(bell);
-    log("Cell bell activated at " + cell);
+  const location = "1-A1-10";
+  const div = document.createElement("div");
+  div.className = "cellbell";
+  div.innerHTML = `
+    <b>Emergency Cell Bell</b><br>
+    Location: ${location}<br><br>
+    Prisoner request: "Could I get toilet paper?"<br><br>
+    <button onclick="respond(this, '${location}')">Respond</button>
+    <button class="warn" onclick="delay(this, '${location}')">Delay</button>
+  `;
+  bellsContainer.appendChild(div);
+  log("Cell bell activated at " + location);
 }
 
-function respond(btn) {
-    const bell = btn.parentElement;
-    bell.innerHTML = `
-        Prisoner request:<br>
-        "Could you bring me toilet paper?"<br><br>
-        <button onclick="decision('warn')">Verbal warning</button><br>
-        <button onclick="decision('iep')">Negative IEP</button><br>
-        <button onclick="decision('log')">Log only</button><br>
-        <button onclick="decision('advice')">Advice & de-escalation</button>
-    `;
+function respond(btn, loc) {
+  btn.parentElement.innerHTML = `
+    Decision required:<br><br>
+    <button onclick="decision('Advice given', '${loc}')">Advice</button><br>
+    <button onclick="decision('Verbal warning issued', '${loc}')">Verbal warning</button><br>
+    <button class="bad" onclick="decision('Negative IEP issued', '${loc}')">Negative IEP</button>
+  `;
 }
 
-function decision(type) {
-    if (type === "warn") log("Prisoner verbally warned");
-    if (type === "iep") log("Negative IEP issued");
-    if (type === "log") log("Incident logged only");
-    if (type === "advice") log("Situation de-escalated successfully");
-
-    bellsDiv.innerHTML = "";
+function delay(btn, loc) {
+  log("Response delayed at " + loc);
+  btn.parentElement.remove();
 }
 
-function delay(btn) {
-    log("Response delayed – prisoner waiting");
-    bellsDiv.removeChild(btn.parentElement);
+function decision(text, loc) {
+  log(text + " at " + loc);
+  bellsContainer.innerHTML = "";
 }
 
+/* MAP */
 function openCell(cell) {
-    log("Cell opened: " + cell);
+  log("Cell opened: " + cell);
 }
 </script>
 
